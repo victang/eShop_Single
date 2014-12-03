@@ -1,0 +1,27 @@
+<h1>Listing promotion_tags</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Promotion</th>
+      <th>Tag</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @promotion_tags.each do |promotion_tag| %>
+      <tr>
+        <td><%= promotion_tag.promotion_id %></td>
+        <td><%= promotion_tag.tag %></td>
+        <td><%= link_to 'Show', promotion_tag %></td>
+        <td><%= link_to 'Edit', edit_promotion_tag_path(promotion_tag) %></td>
+        <td><%= link_to 'Destroy', promotion_tag, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Promotion tag', new_promotion_tag_path %>

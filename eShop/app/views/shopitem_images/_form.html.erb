@@ -1,0 +1,29 @@
+<%= form_for(@shopitem_image) do |f| %>
+  <% if @shopitem_image.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@shopitem_image.errors.count, "error") %> prohibited this shopitem_image from being saved:</h2>
+
+      <ul>
+      <% @shopitem_image.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :shopitem_id %><br>
+    <%= f.number_field :shopitem_id %>
+  </div>
+  <div class="field">
+    <%= f.label :image %><br>
+    <%= f.file_field :image %>
+  </div>
+  <div class="field">
+    <%= f.label :descr %><br>
+    <%= f.text_area :descr %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

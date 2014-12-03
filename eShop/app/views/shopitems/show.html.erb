@@ -1,0 +1,63 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Code name:</strong>
+  <%= @shopitem.code_name %>
+</p>
+
+<p>
+  <strong>Short name:</strong>
+  <%= @shopitem.short_name %>
+</p>
+
+<p>
+  <strong>Long name:</strong>
+  <%= @shopitem.long_name %>
+</p>
+
+<p>
+  <strong>Stock:</strong>
+  <%= @shopitem.stock %>
+</p>
+
+<p>
+  <strong>Price:</strong>
+  <%= @shopitem.price %>
+</p>
+
+<p>
+  <strong>Sales:</strong>
+  <%= @shopitem.sales %>
+</p>
+
+<p>
+  <strong>Image:</strong>
+  <%#= @shopitem.image %>
+  <% if @shopitem.image? %>
+    <%= image_tag @shopitem.image.preview.url %>
+  <% else %>
+    <%= image_tag 'noimage.gif' %>
+  <% end %>
+</p>
+
+<p>
+  <strong>Descr:</strong>
+  <%= @shopitem.descr %>
+</p>
+
+<p>
+  <strong>Active</strong>
+  <%= @shopitem.active %>
+</p>
+  
+<% @shopitem_images.each do |p| %>
+  <% if p.image? %>
+    <%= image_tag p.image.preview.url %>
+  <% else %>
+    <%= image_tag 'noimage.gif' %>
+  <% end %>
+  <%= link_to "Edit Image", edit_shopitem_image_path(p) %>
+<% end %>
+
+<%= link_to 'Edit', edit_shopitem_path(@shopitem) %> |
+<%= link_to 'Back', shopitems_path %>

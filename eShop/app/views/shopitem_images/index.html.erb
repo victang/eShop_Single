@@ -1,0 +1,29 @@
+<h1>Listing shopitem_images</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Stopitem</th>
+      <th>Image</th>
+      <th>Descr</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @shopitem_images.each do |shopitem_image| %>
+      <tr>
+        <td><%= shopitem_image.shopitem_id %></td>
+        <td><%= shopitem_image.image %></td>
+        <td><%= shopitem_image.descr %></td>
+        <td><%= link_to 'Show', shopitem_image %></td>
+        <td><%= link_to 'Edit', edit_shopitem_image_path(shopitem_image) %></td>
+        <td><%= link_to 'Destroy', shopitem_image, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Shopitem image', new_shopitem_image_path %>

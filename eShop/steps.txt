@@ -1,0 +1,64 @@
+A. Initalize base settings
+  1. Build by new, with command:
+     # rails new eShop
+   
+  2. Amend "/Gemfile"
+  3. Run bundle update commands
+     # bundle update
+     # bundle install
+   
+  4. Amend "/config/database.yml"
+  5. Build DB(s) on MySQL.
+  6. Test with command:
+     # rake db:migrate
+
+  7. Run command
+     # rails g foundation:install
+
+B. Build index page
+  1. Run command:
+     # rails generate controller index
+
+  2. Amend "/config/routes.rb"
+  3. Amend "/app/views/layouts/applcation.html.erb"
+  4. Create "/app/views/layouts/_navigation.html.erb"
+  5. Create "/app/views/layouts/_footer.html.erb"
+  6. Amend "/app/assets/stylesheets/application.css" to add footer CSS def.
+  7. Amend "/app/views/index/index.html.erb" for setting the layout.
+  8. Create "/app/views/index/_promotion_pane.html.erb"
+  9. Create "/app/views/index/_search_pane.html.erb"
+  10. Create "/app/views/index/_shop_window.html.erb"
+
+C. Build Promotion Banner Scaffold
+  *** Data Structure ***
+    name:string
+    descr:text
+    image:string
+    date_form:date
+    date_to:date
+    active:boolean
+    
+  1. Build Scaffold by command:
+     rails generate scaffold promotion name:string descr:text image:string date_from:date date_to:date active:boolean
+     
+  2. Run command:
+     rake db:migrate
+     
+  3. 
+  
+D. Build Shop Item Scaffold
+  *** Data Structure ***
+    code_name:string
+    short_name:string
+    long_name:string
+    stock:integer
+    price:float
+    sales:integer
+    image:string
+    descr:text
+    
+  1. Build Scaffold by command:
+     rails generate scaffold shopitem code_name:string short_name:string long_name:string stock:integer price:float sales:integer image:string descr:text
+     
+  2. Build uploader
+     rails generate uploader shopitem

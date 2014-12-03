@@ -1,0 +1,45 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @promotion.name %>
+</p>
+
+<p>
+  <strong>Descr:</strong>
+  <%= @promotion.descr %>
+</p>
+
+<p>
+  <strong>Image:</strong>
+  <% if @promotion.image? %>
+    <%= image_tag @promotion.image.orbit_banner.url %>
+  <% else %>
+    <%= image_tag 'noimage.gif' %>
+  <% end %>
+</p>
+
+<p>
+  <strong>Date from:</strong>
+  <%= @promotion.date_from %>
+</p>
+
+<p>
+  <strong>Date to:</strong>
+  <%= @promotion.date_to %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @promotion.active %>
+</p>
+
+<p>
+  <strong>Tags:</strong> <br />
+  <% @promotion_tags.each do |p| %>
+    <%= p.tag %> <br />
+  <% end %>
+</p>
+
+<%= link_to 'Edit', edit_promotion_path(@promotion) %> |
+<%= link_to 'Back', promotions_path %>

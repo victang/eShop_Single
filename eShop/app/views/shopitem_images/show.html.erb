@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Stopitem:</strong>
+  <%= @shopitem_image.shopitem_id %>
+</p>
+
+<p>
+  <strong>Image:</strong>
+  <%= @shopitem_image.image %>
+</p>
+
+<p>
+  <strong>Descr:</strong>
+  <%= @shopitem_image.descr %>
+</p>
+
+<%= link_to 'Edit', edit_shopitem_image_path(@shopitem_image) %> |
+<%= link_to 'Back', shopitem_images_path %>

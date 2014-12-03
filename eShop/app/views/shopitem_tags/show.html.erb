@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Stopitem:</strong>
+  <%= @shopitem_tag.shopitem_id %>
+</p>
+
+<p>
+  <strong>Tag:</strong>
+  <%= @shopitem_tag.tag %>
+</p>
+
+<%= link_to 'Edit', edit_shopitem_tag_path(@shopitem_tag) %> |
+<%= link_to 'Back', shopitem_tags_path %>

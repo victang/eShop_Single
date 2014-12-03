@@ -1,0 +1,60 @@
+<h1>Listing shopitems</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Code name</th>
+      <th>Short name</th>
+      <th>Long name</th>
+      <th>Stock</th>
+      <th>Price</th>
+      <th>Sales</th>
+      <th>Image</th>
+      <th>Descr</th>
+      <th>Tags</th>
+      <th>Other Image</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @shopitems.each do |shopitem| %>
+      <tr>
+        <td><%= shopitem.code_name %></td>
+        <td><%= shopitem.short_name %></td>
+        <td><%= shopitem.long_name %></td>
+        <td><%= shopitem.stock %></td>
+        <td><%= shopitem.price %></td>
+        <td><%= shopitem.sales %></td>
+        <td>
+          <%#= shopitem.image %>
+          <% if shopitem.image? %>
+            <%= image_tag shopitem.image.preview.url %>
+          <% else %>
+            <%= image_tag 'noimage.gif' %>
+          <% end %>
+        </td>
+        <td><%= shopitem.descr %></td>
+        <td></td>
+        <td>
+          <% @shopitem_image = shopitem.shopitem_images.all %>
+          <% @shopitem_image.each do |p| %>
+            <% if p.image? %>
+              <%= image_tag p.image.preview.url %>
+            <% else %>
+              <%= image_tag 'noimage.gif' %>
+            <% end %>
+            <%#= link_to "Edit Image", edit_shopitme_image_path(p) %>
+          <% end %>
+        </td>
+        <td><%= link_to 'Show', shopitem %></td>
+        <td><%= link_to 'Edit', edit_shopitem_path(shopitem) %></td>
+        <td><%= link_to 'Destroy', shopitem, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Shopitem', new_shopitem_path %>

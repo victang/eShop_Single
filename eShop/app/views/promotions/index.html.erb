@@ -1,0 +1,42 @@
+<h1>Listing promotions</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Descr</th>
+      <th>Image</th>
+      <th>Date from</th>
+      <th>Date to</th>
+      <th>Active</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @promotions.each do |promotion| %>
+      <tr>
+        <td><%= promotion.name %></td>
+        <td><%= promotion.descr %></td>
+        <td>
+          <%# = promotion.image %>
+          <% if promotion.image? %>
+            <%= image_tag promotion.image.icon.url %>
+          <% else %>
+            <%= image_tag 'noimage.gif' %>
+          <% end %>
+        </td>
+        <td><%= promotion.date_from %></td>
+        <td><%= promotion.date_to %></td>
+        <td><%= promotion.active %></td>
+        <td><%= link_to 'Show', promotion %></td>
+        <td><%= link_to 'Edit', edit_promotion_path(promotion) %></td>
+        <td><%= link_to 'Destroy', promotion, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Promotion', new_promotion_path %>

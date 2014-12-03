@@ -1,0 +1,27 @@
+<h1>Listing shopitem_tags</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Stopitem</th>
+      <th>Tag</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @shopitem_tags.each do |shopitem_tag| %>
+      <tr>
+        <td><%= shopitem_tag.shopitem_id %></td>
+        <td><%= shopitem_tag.tag %></td>
+        <td><%= link_to 'Show', shopitem_tag %></td>
+        <td><%= link_to 'Edit', edit_shopitem_tag_path(shopitem_tag) %></td>
+        <td><%= link_to 'Destroy', shopitem_tag, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Shopitem tag', new_shopitem_tag_path %>

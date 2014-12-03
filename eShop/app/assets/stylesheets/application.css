@@ -1,0 +1,57 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ *= require foundation_and_overrides
+
+ */
+
+div.field {
+  position:relative;
+  left:30px;
+  width:90%;
+}
+
+div.actions {
+  position:relative;
+  left:30px;
+  width:90%;
+}
+
+.footer, .push {
+	height: 155px; /* .push must be the same height as .footer */
+}
+
+select#promotion_date_from_1i {
+    max-width:80px;
+}
+
+select#promotion_date_from_2i {
+    max-width:110px;
+}
+
+select#promotion_date_from_3i {
+    max-width:50px;
+}
+
+select#promotion_date_to_1i {
+    max-width:80px;
+}
+
+select#promotion_date_to_2i {
+    max-width:110px;
+}
+
+select#promotion_date_to_3i {
+    max-width:50px;
+}

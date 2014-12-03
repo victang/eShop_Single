@@ -1,0 +1,17 @@
+<% content_for :title do %>FaiKee - Shopping Window<% end %>
+
+<!-- This is the row for the promotional banners. -->
+<div class="row">
+  <%= render 'promotion_pane' %>
+</div>
+<!-- This is the row for the shopping window. -->
+<div class="row">
+  <!-- This column is for the searching boxes. -->
+  <div class="large-3 columns">
+    <%= render 'search_pane' %>
+  </div>
+  <!-- This column is for the shopping window. -->
+  <div class="large-9 columns">
+    <%= render 'shop_window' %>
+  </div>
+</div>

@@ -1,0 +1,58 @@
+<%= form_for(@promotion) do |f| %>
+  <% if @promotion.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@promotion.errors.count, "error") %> prohibited this promotion from being saved:</h2>
+
+      <ul>
+      <% @promotion.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="field">
+      <%= f.label :name %><br>
+      <%= f.text_field :name, :size => "30" %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="field">
+      <%= f.label :descr %><br>
+      <%= f.text_area :descr, :size => "30x10" %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="field">
+      <%= f.label :image %><br>
+      <%= f.file_field :image %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-6 large-6 columns">
+      <div class="field">
+        <%= f.label :date_from %><br>
+        <%= f.date_select :date_from %>
+      </div>
+    </div>
+    <div class="small-6 large-6 columns">
+      <div class="field">
+        <%= f.label :date_to %><br>
+        <%= f.date_select :date_to %>
+      </div>
+    </div>
+  </div>
+  <div class="field">
+    <%= f.check_box :active, :checked => true %> <%= f.label :active %>
+  </div>
+    <div class="field">
+      Tags (Seperated by ";")<br />
+      <%# = f.text_field :tag%>
+      <input id="promotion_tag" name="promotion[tag]" size="30" type="text" />
+    </div>
+  
+  <div class="actions">
+    <input class="button" name="commit" type="submit" value="Create Promotion" />
+  </div>
+<% end %>

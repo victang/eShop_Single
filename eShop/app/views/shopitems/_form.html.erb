@@ -1,0 +1,85 @@
+<%= form_for(@shopitem) do |f| %>
+  <% if @shopitem.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@shopitem.errors.count, "error") %> prohibited this shopitem from being saved:</h2>
+
+      <ul>
+      <% @shopitem.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="field">
+      <%= f.label :code_name %><br>
+      <%= f.text_field :code_name, :size => "30" %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="field">
+      <%= f.label :short_name %><br>
+      <%= f.text_field :short_name %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="field">
+      <%= f.label :long_name %><br>
+      <%= f.text_field :long_name %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="field">
+      <%= f.label :descr %><br>
+      <%= f.text_area :descr, :size => "30x10" %>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="small-4 large-4 columns">
+      <div class="field">
+        <%= f.label :stock %><br>
+        <%= f.number_field :stock %>
+      </div>
+    </div>
+    <div class="small-4 large-4 columns">
+      <div class="field">
+        <%= f.label :price %><br>
+        <%= f.number_field :price %>
+      </div>
+    </div>
+    <div class="small-4 large-4 columns">
+      <div class="field">
+        <%= f.label :sales %><br>
+        <%= f.number_field :sales %>
+      </div>
+    </div>
+  </div>
+  
+  <div class="field">
+    <%= f.check_box :active, :checked => true %> <%= f.label :active %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :image %><br>
+    <%= f.file_field :image %>
+  </div>
+  
+  <div class="field">
+    Tags (Seperated by ";")<br />
+    <input id="shopitem_tag" name="shopitem[tag]" size="30" type="text" />
+  </div>
+  
+  <%= f.fields_for :shopitem_images do |p| %>
+    <div class="field">
+      <%= p.label :image %><br />
+      <%= p.file_field :image, :multiple => true, name: "shopitem_images[image][]" %>
+    </div>
+  <% end %>
+  
+  <div class="actions">
+    <%#= f.submit %>
+    <input class="button" name="commit" type="submit">
+  </div>
+<% end %>

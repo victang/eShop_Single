@@ -1,0 +1,32 @@
+# SQLite version 3.x
+#   gem install sqlite3
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem 'sqlite3'
+#
+default: &default
+  # adapter: sqlite3 # Inactivated by Victor Tang for Ver. 0.1
+  adapter: mysql2 # Added by Victor Tang for Ver. 0.1
+  encoding: utf8  # Added by Victor Tang for Ver. 0.1
+  pool: 5
+  username: eShop # Added by Victor Tang for Ver. 0.1
+  password: eShop # Added by Victor Tang for Ver. 0.1
+  socket: /tmp/mysql.sock # Added by Victor Tang for Ver. 0.1
+  # timeout: 5000 # Inactivated by Victor Tang for Ver. 0.1
+
+development:
+  <<: *default
+  # database: db/development.sqlite3 # Inactivated by Victor Tang for Ver. 0.1
+  database: eShop_DEV # Added by Victor Tang for Ver. 0.1
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+  # database: db/test.sqlite3 # Inactivated by Victor Tang for Ver. 0.1
+  database: eShop_TST # Added by Victor Tang for Ver. 0.1
+
+production:
+  <<: *default
+  # database: db/production.sqlite3 # Inactivated
+  database: eShop_PRD # Added by Victor Tang for Ver. 0.1
