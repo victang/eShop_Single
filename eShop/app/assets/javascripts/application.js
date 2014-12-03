@@ -27,3 +27,8 @@ $(function(){
     singleItem:true
   }); 
 });
+
+function AddToCartFromIndex(shopitem_id, cart_amount)
+{
+  alert("StopItem ID = " + shopitem_id + " ; Amount = " + cart_amount + " ;");
+}
