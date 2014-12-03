@@ -39,6 +39,8 @@ gem 'bcrypt', '~> 3.1.7' # Activated by Victor Tang for Ver. 0.1
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'jquery-rails'
+
 # Added by Victor Tang for Ver. 0.1 -- Start
 gem 'foundation-rails', '5.4.3.1'
 group :development do

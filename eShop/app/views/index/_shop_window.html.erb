@@ -52,57 +52,23 @@
           <div class="row">
             <div class="small-6 large-6 columns">
               <!-- Left side is Orbit window - Start -->
-              <ul class="shopitem_<%=@shopitems.at(i - 1).id %>-orbit" width="800" height="800" data-orbit>
-                <li>
-                  <%= image_tag @shopitems.at(i - 1).image.url, :size => "800x800" %>
-                  <div class="orbit-caption">
-                    <%= @shopitems.at(i- 1).long_name %>
-                  </div>
-                </li>
+              <div class="owl-carousel">
+                <div><%= image_tag @shopitems.at(i - 1).image.url, :size => "800x800" %></div>
                 <!-- Add extra orbit picture - Start -->
                 <% if !@shopitems.at(i - 1).shopitem_images.empty? %>
                   <% @shopitems.at(i - 1).shopitem_images.each do |j| %>
-                    <li>
+                    <div>
                       <%= image_tag j.image.url, :size => "800x800" %>
-                      <div class="orbit-caption">
-                        <%= @shopitems.at(i - 1).long_name %>
-                      </div>
-                    </li>
+                    </div>
                   <% end %>
                 <% end %>
                 <!-- Add extra orbit picture - End-->
+              </div>
               </ul>
               <!-- Left side is Oribit Window - End -->
             </div>
             <div class="small-6 large-6 columns">
             <!-- Right side is Description - Start -->
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
             <!-- Right side is Description - End -->
             </div>
             <a class="close-reveal-modal">&#215;</a>

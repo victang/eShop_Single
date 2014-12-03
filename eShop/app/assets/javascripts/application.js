@@ -18,4 +18,12 @@
 //= require foundation-datetimepicker
 //= require owl.carousel
 
-$(function(){ $(document).foundation(); });
+$(function(){ 
+  $(document).foundation(); 
+  $(".owl-carousel").owlCarousel({
+    navigation : true, // Show next and prev buttons
+    slideSpeed : 300,
+    paginationSpeed : 400,
+    singleItem:true
+  }); 
+});
