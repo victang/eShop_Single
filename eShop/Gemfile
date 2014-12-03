@@ -56,4 +56,6 @@ gem 'rmagick', :require => 'RMagick'
 gem 'carrierwave'
 
 gem 'foundation-datetimepicker-rails'
+
+gem 'owlcarousel-rails'
 # Add by Victor Tang for Ver. 0.1 -- End

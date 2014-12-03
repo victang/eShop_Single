@@ -16,5 +16,6 @@
 //= require turbolinks
 //= require_tree .
 //= require foundation-datetimepicker
+//= require owl.carousel
 
 $(function(){ $(document).foundation(); });
