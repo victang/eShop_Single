@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @cart.user_id %>
+</p>
+
+<p>
+  <strong>Batch:</strong>
+  <%= @cart.batch_id %>
+</p>
+
+<p>
+  <strong>Shopitem:</strong>
+  <%= @cart.shopitem_id %>
+</p>
+
+<p>
+  <strong>Shopitem amount:</strong>
+  <%= @cart.shopitem_amount %>
+</p>
+
+<p>
+  <strong>Pay amount:</strong>
+  <%= @cart.pay_amount %>
+</p>
+
+<p>
+  <strong>Selected:</strong>
+  <%= @cart.selected %>
+</p>
+
+<%= link_to 'Edit', edit_cart_path(@cart) %> |
+<%= link_to 'Back', carts_path %>

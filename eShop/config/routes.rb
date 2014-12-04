@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :carts
+
   resources :shopitem_images
 
   resources :shopitem_tags
