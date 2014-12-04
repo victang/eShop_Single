@@ -81,12 +81,11 @@
                 <!-- Right side is Description - End -->
                 <div class="row">
                   <div class="small-3 large-3 columns">
-                    <input type="number" name="shopitem_<%=@shopitems.at(i - 1).id%>_cart_amt" value="1">
+                    <input type="number" name="shopitem_<%=@shopitems.at(i - 1).id%>_cart_amt" id="shopitem_<%=@shopitems.at(i - 1).id%>_cart_amt" value="1">
                   </div>
                   <div class="small-9 large-9 columns">
-                    <a class="button" href="#" onclick="AddToCartFromIndex(<%=@shopitems.at(i - 1).id%>, this.Shopwindow_form.<%=@shopitems.at(i - 1).id%>_cart_amt.value)">Add to Cart</a>
+                    <a class="button" href="#" onclick="AddToCartFromIndex(<%=@shopitems.at(i - 1).id%>, $('#shopitem_<%=@shopitems.at(i - 1).id%>_cart_amt').val())">Add to Cart</a> 
                   </div>
-                    <a class="button" href="#" onclick="alert('Value = ' + 2)">Test</a>
                   </div>
                 </div>
               </div>
