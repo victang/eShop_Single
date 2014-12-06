@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :batches
+
   get 'session/login'
 
   get 'session/logout'

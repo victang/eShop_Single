@@ -1,7 +1,8 @@
 class SessionController < ApplicationController
   
-  before_filter :authenticate_user, :only => [:home, :profile, :setting]
-  before_filter :save_login_state, :only => [:login, :login_sttempt]
+  # before_filter :authenticate_user, :only => [:home, :profile, :setting]
+  before_filter :save_login_state, :only => [:login, :login_attempt]
+  skip_before_filter :authenticate_user, :only => [:login, :login_attempt]
   
   def login
   end

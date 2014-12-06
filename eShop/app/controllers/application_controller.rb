@@ -3,8 +3,20 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  helper_method :getitemperpage, :getcurrentusername, :getcurrentuseremail
+  helper_method :getitemperpage, :getcurrentusername, :getcurrentuseremail, \
+                :checkrootexist
 
+  before_filter :authenticate_user
+  before_filter :checkrootexistwithaction
+
+  def getalltags
+    @promotion_tags = PromotionTag.select(:tag).distinct
+    @shopitem_tags = ShopitemTag.select(:tag).distinct
+    @all_tags = @promotion_tags + @shopitem_tags
+    @all_tags = @all_tags.uniq
+    return @all_tags
+  end
+  
   def getitemperpage
   	# Fetch setting in next version
   	return 36
@@ -25,6 +37,14 @@ class ApplicationController < ActionController::Base
       return @current_user.email
     else
       return ""
+    end
+  end
+  
+  def checkrootexist
+    if (User.exists?(username: "root"))
+      return true
+    else
+      return false
     end
   end
   
@@ -51,4 +71,30 @@ class ApplicationController < ActionController::Base
       return true
     end
   end
+  
+  def checkrootexistwithaction
+    if (User.exists?(username: "root"))
+      return true
+    else
+      redirect_to(:controller => 'user', :action => 'new')
+      return false
+    end
+  end
+  
+  def checkrootsession
+    if session[:user_id]
+      @current_user = User.find session[:user_id]
+      if @current_user == "root"
+        return true
+      else
+        return false
+      end 
+    else
+      @current_user = nil
+      session[:user_id] = nil
+      redirect_to(:controller => 'session', :action => 'login')
+      return false
+    end
+  end
+  
 end

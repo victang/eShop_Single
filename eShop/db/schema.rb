@@ -11,7 +11,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141205150440) do
+ActiveRecord::Schema.define(version: 20141206052046) do
+
+  create_table "batches", force: true do |t|
+    t.string   "code"
+    t.integer  "status"
+    t.text     "remark"
+    t.boolean  "active"
+    t.integer  "user_id"
+    t.string   "email"
+    t.string   "fullname"
+    t.string   "address1"
+    t.string   "address2"
+    t.string   "address3"
+    t.string   "address4"
+    t.string   "address5"
+    t.string   "address6"
+    t.string   "country"
+    t.string   "city"
+    t.string   "phone"
+    t.text     "user_remark"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "carts", force: true do |t|
     t.integer  "user_id"

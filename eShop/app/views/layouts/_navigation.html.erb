@@ -2,7 +2,7 @@
 <nav class="top-bar" data-topbar role="navigation">
   <ul class="title-area">
     <li class="name">
-      <h1><a href="#">eShop (Dummy)</a></h1>
+      <h1><%= link_to "Fai Kee", '/index' %></h1>
     </li>
     <li class="toggle-topbar menu-icon">
       <a href="#"><span>Menu</span></a>
@@ -10,18 +10,25 @@
   </ul>
   <section class="top-bar-section">
     <ul class="right">
-      <li class="has-dropdown">
-        <a href="#">Menu</a>
-        <ul class="dropdown">
-          <li><a href="#">Link 1</a></li>
-        </ul>
-      </li>
-      <li class="has-dropdown active">
-        <a href="#">User (#)</a>
-        <ul class="dropdown">
-          <li><a href="#">Link 1</a></li>
-        </ul>
-      </li>
+      <% if getcurrentusername != "" %>
+        <li class="has-dropdown active">
+            <a href="#">Welcome! <%= getcurrentusername %></a>
+          <ul class="dropdown">
+            <li><%= link_to "View Cart", controller: "carts", action: "session_cart" %></li>
+            <li><%= link_to "Profile", controller: "session", action: "profile" %></li>
+            <li><%= link_to "Log out", controller: "session", action: "logout" %></li>
+            <% if getcurrentusername == "root" %>
+              <li class="divider"></li>
+              <li><%= link_to "Organize Promotions", controller: "promotions", action: "index" %></li>
+              <li><%= link_to "Organize Shop Items", controller: "shopitems", action: "index" %></li>
+              <li><%= link_to "Organize Orders", controller: "batches", action: "index"%></li>
+            <% end %>
+          </ul>
+        </li>
+      <% else %>
+        <li><%= link_to "Signup for new customer", controller: "users", action: "new" %></li>
+        <li><%= link_to "Signin", controller: "session", action: "login" %></li>
+      <% end %>
     </ul>
   </section>
 </nav>

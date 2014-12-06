@@ -1,0 +1,57 @@
+<h1>Listing batches</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>Status</th>
+      <th>Remark</th>
+      <th>Active</th>
+      <th>User</th>
+      <th>Email</th>
+      <th>Fullname</th>
+      <th>Address1</th>
+      <th>Address2</th>
+      <th>Address3</th>
+      <th>Address4</th>
+      <th>Address5</th>
+      <th>Address6</th>
+      <th>Country</th>
+      <th>City</th>
+      <th>Phone</th>
+      <th>User remark</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @batches.each do |batch| %>
+      <tr>
+        <td><%= batch.code %></td>
+        <td><%= batch.status %></td>
+        <td><%= batch.remark %></td>
+        <td><%= batch.active %></td>
+        <td><%= batch.user_id %></td>
+        <td><%= batch.email %></td>
+        <td><%= batch.fullname %></td>
+        <td><%= batch.address1 %></td>
+        <td><%= batch.address2 %></td>
+        <td><%= batch.address3 %></td>
+        <td><%= batch.address4 %></td>
+        <td><%= batch.address5 %></td>
+        <td><%= batch.address6 %></td>
+        <td><%= batch.country %></td>
+        <td><%= batch.city %></td>
+        <td><%= batch.phone %></td>
+        <td><%= batch.user_remark %></td>
+        <td><%= link_to 'Show', batch %></td>
+        <td><%= link_to 'Edit', edit_batch_path(batch) %></td>
+        <td><%= link_to 'Destroy', batch, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Batch', new_batch_path %>
