@@ -35,7 +35,7 @@ function AddToCartFromIndex(shopitem_id, cart_amount)
   
   var form = document.createElement("form");
   form.setAttribute("method", "post");
-  form.setAttribute("action", "/cart");
+  form.setAttribute("action", "/add_to_cart");
   form.setAttribute("target", "cart");
   form.setAttribute("class", "add_cart");
   form.setAttribute("enctype", "multipart/form-data");
@@ -63,5 +63,5 @@ function AddToCartFromIndex(shopitem_id, cart_amount)
 
   form.submit();
   
-  setTimeout(tmp_window.close(), 10000);
+  /* tmp_window.close(); */
 }

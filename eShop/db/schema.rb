@@ -11,7 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141122033245) do
+ActiveRecord::Schema.define(version: 20141205150440) do
+
+  create_table "carts", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "batch_id"
+    t.integer  "shopitem_id"
+    t.integer  "shopitem_amount"
+    t.float    "pay_amount",      limit: 24
+    t.boolean  "selected"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "promotion_tags", force: true do |t|
     t.integer  "promotion_id"
@@ -55,6 +66,18 @@ ActiveRecord::Schema.define(version: 20141122033245) do
     t.integer  "sales"
     t.string   "image"
     t.text     "descr"
+    t.boolean  "active"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "users", force: true do |t|
+    t.string   "username"
+    t.string   "email"
+    t.string   "encrypted_password"
+    t.string   "salt"
+    t.integer  "wrong_try"
+    t.boolean  "acclock"
     t.boolean  "active"
     t.datetime "created_at"
     t.datetime "updated_at"

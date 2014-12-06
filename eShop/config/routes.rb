@@ -1,4 +1,18 @@
 Rails.application.routes.draw do
+  get 'session/login'
+
+  get 'session/logout'
+
+  get 'session/login_attempt'
+
+  get 'session/home'
+
+  get 'session/profile'
+
+  get 'session/setting'
+
+  get 'users/new'
+
   resources :carts
 
   resources :shopitem_images
@@ -14,6 +28,11 @@ Rails.application.routes.draw do
   # Added by Victor Tang for Ver. 0.1 -- Start
   root :to => 'index#index'      # default index page routing
   get 'index', to: 'index#index' # default index page routing #2
+  match '/session_cart', to: 'carts#session_cart', :via => :get
+  match '/add_to_cart', to: 'carts#add', :via => :post
+  post 'users/create'
+  post 'session/login_attempt'
+  post 'session/logout'
   # Added by Victor Tang for Ver. 0.1 -- End
   
   # The priority is based upon order of creation: first created -> highest priority.

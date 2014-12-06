@@ -1,5 +1,6 @@
 class CartsController < ApplicationController
   before_action :set_cart, only: [:show, :edit, :update, :destroy]
+  protect_from_forgery with: :null_session
 
   # GET /carts
   # GET /carts.json
@@ -17,6 +18,45 @@ class CartsController < ApplicationController
     @cart = Cart.new
   end
 
+  def add
+    if params['cart']['shopitem_id'] && params['cart']['shopitem_amount']
+      # Add the stuff into session cart
+      @tmp_shopitem_id = params['cart']['shopitem_id']
+      @tmp_shopitem_amount = params['cart']['shopitem_amount']
+      if cookies[:cart] != nil
+        @cart_array = cookies[:cart]
+      else
+        @cart_array = Array.new
+      end
+      
+      # check if array has component
+      @write_done = false
+      @cart_array.each_with_index do |element, content|
+        if content[1] == @tmp_shopitem_id
+          @cart_array[element] = [@tmp_shopitem_id, cart_array[element][2] + @tmp_shopitem_amount]
+          @write_done = true
+        end
+      end
+      if @write_done == false
+        @cart_array << [@tmp_shopitem_id, @tmp_shopitem_amount]
+      end
+      cookies[:cart] = @cart_array
+    end
+    
+  end
+  
+  def session_cart
+    if cookies[:cart] != nil
+      @cart_array = cookies[:cart]
+    else
+      @cart_array = Array.new
+    end
+  end
+  
+  def check_out
+    
+  end
+  
   # GET /carts/1/edit
   def edit
   end
