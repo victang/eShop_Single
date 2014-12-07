@@ -35,6 +35,8 @@ Rails.application.routes.draw do
   post 'users/create'
   post 'session/login_attempt'
   post 'session/logout'
+  get  'index/:page(.:format)', to: 'index#index'
+  
   # Added by Victor Tang for Ver. 0.1 -- End
   
   # The priority is based upon order of creation: first created -> highest priority.

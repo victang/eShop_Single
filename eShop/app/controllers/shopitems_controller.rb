@@ -23,6 +23,11 @@ class ShopitemsController < ApplicationController
 
   # GET /shopitems/1/edit
   def edit
+    if @shopitem.active 
+      params[:active] = @shopitem.active
+    else
+      params[:active] = false
+    end
   end
 
   # POST /shopitems
@@ -45,6 +50,9 @@ class ShopitemsController < ApplicationController
         format.html { redirect_to @shopitem, notice: 'Shopitem was successfully created.' }
         format.json { render :show, status: :created, location: @shopitem }
       else
+        @shopitem = Shopitem.new
+        # @shopitem_tag = @shopitem.shopitem_tags.build
+        @shopitem_image = @shopitem.shopitem_images.build
         format.html { render :new }
         format.json { render json: @shopitem.errors, status: :unprocessable_entity }
       end
@@ -55,6 +63,7 @@ class ShopitemsController < ApplicationController
   # PATCH/PUT /shopitems/1.json
   def update
     respond_to do |format|
+      @shopitem.active = params[:shopitem][:active]
       if @shopitem.update(shopitem_params)
         format.html { redirect_to @shopitem, notice: 'Shopitem was successfully updated.' }
         format.json { render :show, status: :ok, location: @shopitem }

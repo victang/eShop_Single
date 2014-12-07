@@ -4,22 +4,38 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   helper_method :getitemperpage, :getcurrentusername, :getcurrentuseremail, \
-                :checkrootexist
+                :checkrootexist, :getshopitemmaxpagenum, :not_found
 
   before_filter :authenticate_user
   before_filter :checkrootexistwithaction
 
+  def not_found
+    raise ActionController::RoutingError.new('Not Found')
+  end
+  
   def getalltags
-    @promotion_tags = PromotionTag.select(:tag).distinct
-    @shopitem_tags = ShopitemTag.select(:tag).distinct
-    @all_tags = @promotion_tags + @shopitem_tags
-    @all_tags = @all_tags.uniq
-    return @all_tags
+    @all_tags = Array.new
+    PromotionTag.select(:tag).distinct.each do |i|
+      @all_tags.insert(-1, i.tag)
+    end
+    ShopitemTag.select(:tag).distinct.each do |j|
+      @all_tags.insert(-1, j.tag)
+    end
+    return @all_tags.uniq.sort
   end
   
   def getitemperpage
   	# Fetch setting in next version
   	return 36
+  end
+  
+  def getshopitemmaxpagenum
+    @shopitem_count = Shopitem.where("(active = ?)", true).count
+    if (@shopitem_count % getitemperpage > 0)
+      return (@shopitem_count / getitemperpage) + 1
+    else
+      return @shopitem_count / getitemperpage
+    end
   end
   
   def getcurrentusername
@@ -76,7 +92,7 @@ class ApplicationController < ActionController::Base
     if (User.exists?(username: "root"))
       return true
     else
-      redirect_to(:controller => 'user', :action => 'new')
+      redirect_to(:controller => 'users', :action => 'new')
       return false
     end
   end

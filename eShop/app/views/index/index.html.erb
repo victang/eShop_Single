@@ -1,17 +1,19 @@
 <% content_for :title do %>FaiKee - Shopping Window<% end %>
 
-<!-- This is the row for the promotional banners. -->
-<div class="row">
-  <%= render 'promotion_pane' %>
-</div>
-<!-- This is the row for the shopping window. -->
-<div class="row">
-  <!-- This column is for the searching boxes. -->
-  <div class="large-3 columns">
-    <%= render 'search_pane' %>
+<form accept-charset="UTF-8" action="/index" class="index_index" enctype="multipart/form-data" id="index_index" method="post">
+  <!-- This is the row for the promotional banners. -->
+  <div class="row">
+    <%= render 'promotion_pane' %>
   </div>
-  <!-- This column is for the shopping window. -->
-  <div class="large-9 columns">
-    <%= render 'shop_window' %>
+  <!-- This is the row for the shopping window. -->
+  <div class="row">
+    <!-- This column is for the searching boxes. -->
+    <div class="medium-3 large-3 columns">
+      <%= render 'search_pane' %>
+    </div>
+    <!-- This column is for the shopping window. -->
+    <div class="medium-9 large-9 columns">
+      <%= render 'shop_window' %>
+    </div>
   </div>
-</div>
+</from>

@@ -9,6 +9,7 @@ RSpec.describe "shopitems/show", :type => :view do
       :stock => 1,
       :price => 1.5,
       :sales => 2,
+      :active => false
       :image => "Image",
       :descr => "MyText"
     ))

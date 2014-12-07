@@ -1,0 +1,23 @@
+<div class="row">
+  <div class="large-12 columns">
+    <div class="row collapse">
+      <div class="small-8 columns">
+        <input id="index_keyword" name="index[keyword]" type="text" placeholder="Keyword...">
+      </div>
+      <div class="small-4 columns">
+        <input class="button postfix" name="commit" type="submit" value="Search">
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="large-12 columns">
+    <ul class="small-block-grid-2">
+      <% @all_tags.each_with_index do |i, e| %>
+        <li>
+          <label for="index_tag_<%= e %>"><input id="index_tag_<%= e %>" name="index[tag][<%= e %>]" type="checkbox" /><%= i %></label>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
