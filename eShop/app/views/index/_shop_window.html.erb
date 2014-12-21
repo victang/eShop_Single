@@ -72,7 +72,13 @@
                       <input type="number" name="shopitem_<%=c.id%>_cart_amt" id="shopitem_<%=c.id%>_cart_amt" value="1">
                     </div>                  
                     <div class="small-9 large-9 columns">
-                      <a class="button" href="#" onclick="AddToCartFromIndex(<%=c.id%>, $('#shopitem_<%=c.id%>_cart_amt').val())">Add to Cart</a> 
+                      <!-- Testing new button -->
+                      <!--
+                        <a class="button" href="#" onclick="AddToCartFromIndex(<%=c.id%>, $('#shopitem_<%=c.id%>_cart_amt').val())">Add to Cart</a> 
+                      -->
+                        <a data-remote="true" data-method="post" class="button" id="shopitem_<%=c.id%>_add" onClick="location.href='/index/add_to_cart/<%=c.id%>/'+$('#shopitem_<%=c.id%>_cart_amt').val()">Add to Cart</a> 
+                        
+                      <!---->
                     </div>
                   </div>
                 <% end %>

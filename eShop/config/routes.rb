@@ -29,13 +29,14 @@ Rails.application.routes.draw do
 
   # Added by Victor Tang for Ver. 0.1 -- Start
   root :to => 'index#index'      # default index page routing
-  get 'index', to: 'index#index' # default index page routing #2
+  match 'index', to: 'index#index', via: [:get, :post] # default index page routing #2
   match '/session_cart', to: 'carts#session_cart', :via => :get
   match '/add_to_cart', to: 'carts#add', :via => :post
   post 'users/create'
   post 'session/login_attempt'
   post 'session/logout'
-  get  'index/:page(.:format)', to: 'index#index'
+  match  'index/:page(.:format)', to: 'index#index', via: [:get, :post]
+  match 'index/add_to_cart/:item_id/:unit', to: 'index#add_to_cart', :via => :post
   
   # Added by Victor Tang for Ver. 0.1 -- End
   

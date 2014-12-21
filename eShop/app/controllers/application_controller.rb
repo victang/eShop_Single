@@ -113,4 +113,11 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  def load_cart
+    if authenticate_user == true
+      @cart = Cart.where("(user_id = ?) AND (batch_id = 0)", session[:user_id])
+    else
+    @cart = nil
+    end
+  end  
 end

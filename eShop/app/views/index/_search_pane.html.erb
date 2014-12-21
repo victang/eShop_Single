@@ -15,7 +15,7 @@
     <ul class="small-block-grid-2">
       <% @all_tags.each_with_index do |i, e| %>
         <li>
-          <label for="index_tag_<%= e %>"><input id="index_tag_<%= e %>" name="index[tag][<%= e %>]" type="checkbox" /><%= i %></label>
+          <label for="index_tag_<%= e %>"><input id="index_tag_<%= e %>" name="index[tag][<%= e %>]" type="checkbox" value="<%= i %>" /><%= i %></label>
         </li>
       <% end %>
     </ul>
