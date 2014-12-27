@@ -53,6 +53,15 @@ class CartsController < ApplicationController
     end
   end
   
+  def pending
+    # Load cart items here
+    @pending_cart = Cart.where("(batch_id = 0) AND (user_id = ?)", session[:user_id]).select("shopitem_id, sum(shopitem_amount), sum(pay_amount)").group("shopitem_id")
+  end
+
+  def edit_pending
+
+  end
+
   def check_out
     
   end

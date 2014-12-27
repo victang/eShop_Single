@@ -1,0 +1,28 @@
+<% if !@pending_cart.empty? %>
+  <%= form_tag({controller: "carts", action: "edit_pending"}, method: "post") do %>
+    <table>
+      <tr>
+        <th>Selected</th>
+        <th>Product</th>
+        <th>Unit Price</th>
+        <th>Unit</th>
+        <th>Sub-Total</th>
+      </tr>
+      <% @pending_cart.each do |c| %>
+        <% @tmp_shopitem = nil %>
+        <% @tmp_shopitem = Shopitem.find(c.shopitem_id) %>
+        <tr>
+          <td><%= check_box_tag(:selected) %></td>
+          <td><%= @tmp_shopitem.long_name%></td>
+          <td><%= @tmp_shopitem.price%></td>
+          <td><%= c.shopitem.amount %></td>
+          <td><%= c.pay_amount %></td>
+        </tr>
+      <% end %>
+    </table>
+  <% end %>
+<% else %>
+  <div data-alert class="alert-box info radius">
+    You shopping cart is empty
+  </div>
+<% end %>

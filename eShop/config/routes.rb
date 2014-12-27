@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   get 'session/home'
 
   get 'session/profile'
-
+  
   get 'session/setting'
 
   get 'users/new'
@@ -30,10 +30,11 @@ Rails.application.routes.draw do
   # Added by Victor Tang for Ver. 0.1 -- Start
   root :to => 'index#index'      # default index page routing
   match 'index', to: 'index#index', via: [:get, :post] # default index page routing #2
-  # match '/session_cart', to: 'carts#session_cart', :via => :get
-  match 'cart', to: 'cart#pending', :via => :get
+  match '/session_cart', to: 'carts#session_cart', :via => :get
+  match 'cart', to: 'carts#pending', :via => :get
+  post 'carts/edit_pending'
   # match '/add_to_cart', to: 'carts#add', :via => :post
-  post '/shopitems/addtocart'
+  post 'shopitems/addtocart'
   post 'users/create'
   post 'session/login_attempt'
   post 'session/logout'
