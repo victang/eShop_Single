@@ -1,0 +1,42 @@
+<!-- Warning pane for users-->
+<% if getcurrentusername == "" %>
+<div class="row">
+  <div data-alert class="alert-box info radius">
+    Please Sign up / Sign in to get a better shopping experience.
+    <a href="#" class="close">&times;</a>
+  </div>
+</div>
+<% end %>
+<!-- Prompt window for status notice -->
+<% if !flash[:notice].nil? %>
+  <% case flash[:notice].to_s.split(';')[0] %>
+  <% when "addtocart" then %>
+    <% @cart_just_add = Cart.find(flash[:notice].to_s.split(';')[1].to_i) %>
+    <% @tmp_shopitem = Shopitem.find(@cart_just_add.shopitem_id) %>
+    <div id="prompt_addtocart" class="reveal-modal" data-reveal>
+      <h3>You have added new item(s) to cart:</h3>
+      <div class="row">
+        <div class="small-5 large-2 columns">
+          <% if @tmp_shopitem.image.preview_128.file.exists? %>
+              <%= image_tag @tmp_shopitem.image.preview_128.url, :size => "128x128" %>
+            <% else %>
+              <% if @tmp_shopitem.image? %>
+                <%= image_tag @tmp_shopitem.image.url, :size => "128x128" %>
+              <% else %>
+                <%= image_tag 'noimage.gif' %>
+              <% end %>
+            <% end %>
+        </div>
+        <div class="small-7 large-10 columns">
+          <table>
+            <tr><td><strong>Full name:</strong></td><td><%= @tmp_shopitem.long_name %></td></tr>
+            <tr><td><strong>Price (HKD$):</strong></td><td><%= @tmp_shopitem.price %></td></tr>
+            <tr><td><strong>Unit:</strong></td><td><%= @cart_just_add.shopitem_amount %></td></tr>
+            <tr><td><strong>Total (HKD$):</strong></td><td><%= @cart_just_add.pay_amount %></td></tr>
+          </table>
+        </div>
+      </div>
+      <a class="close-reveal-modal">&#215;</a>
+    </div>
+  <% end %>
+<% end %>

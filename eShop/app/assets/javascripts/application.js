@@ -20,11 +20,18 @@
 
 $(function(){ 
   $(document).foundation(); 
-  $(".owl-carousel").owlCarousel({
+  $(".owl-carousel-shopitem").owlCarousel({
     navigation : true, // Show next and prev buttons
     slideSpeed : 300,
     paginationSpeed : 400,
-    singleItem:true
+    singleItem : true
+  });
+  $(".owl-carousel-promotion-banner").owlCarousel({
+    slideSpeed : 300,
+    paginationSpeed : 400,
+    singleItem : true,
+    autoPlay : true,
+    stopOnHover : true
   }); 
 });
 

@@ -1,16 +1,14 @@
 <% @banner_counter = 0 %>
 <% @banner.each do |a| %>
   <% if @banner_counter == 0 %>
-    <ul class="banner-orbit" data-orbit>
+    <div class="owl-carousel-promotion-banner">
   <% end %>
-  <li>
-    <%= image_tag a.image.orbit_banner.url %>
-    <div class="orbit-caption">
-      <%= a.name %>
-    </div>
-  </li>
+  <div>
+    <%= image_tag a.image.orbit_banner.url, :width => "1024" %> <br />
+    <%= a.name %>
+  </div>
   <% @banner_counter = @banner_counter + 1 %>
 <% end %>
 <% if @banner_counter > 0 %>
-  </ul>
+  </div>
 <% end %>

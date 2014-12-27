@@ -1,63 +1,87 @@
-<p id="notice"><%= notice %></p>
+<!-- <p id="notice"><%= notice %></p> -->
+<%= form_tag({controller: "shopitems", action: "addtocart"}, method: "post") do %>
+  <br />
+  <div class="row">
+    <div class="small-5 large-5 columns">
+    <!-- Owl scroll of Images - Start -->
+      <% if @shopitem.image? %>
+        <div class="owl-carousel-shopitem">
+          <div><%= image_tag @shopitem.image.url, :width => "800" %></div>
+          <% @shopitem_images.each do |p| %>
+            <% if p.image? %>
+              <div><%= image_tag p.image.url, :width => "800" %></div>
+            <% end %>
+          <% end %>
+        </div>
+      <% else %>
+        <%= image_tag 'noimage.gif' %>
+      <% end %>
+    <!-- Owl scroll of Images - End -->
+    </div>
+    <div class="small-7 large-7 columns">
+      <div class="row">
+      <table>
+        <tr><td><strong>Full name:</strong></td><td><%= @shopitem.long_name %></td></tr>
+        <tr><td><strong>Stock:</strong></td><td><%= @shopitem.stock %></td></tr>
+        <tr><td><strong>Price (HKD$):</strong></td><td><%= @shopitem.price %></td></tr>
+        <tr><td><strong>Sold:</strong></td><td><%= @shopitem.sales %></td></tr>
+        <tr><td colspan="2"><strong>Description:</strong></td></tr>
+        <tr><td colspan="2"><%= h(@shopitem.descr).gsub(' ', '&nbsp;').gsub(/\n/, '<br />').html_safe %></td></tr>
+        <tr><td colspan="2"><strong>Tags:</strong></td></tr>
+        <tr>
+          <td colspan="2">
+            <!-- Tags -->
+            <% @shopitem.shopitem_tags.each do |ct| %>
+              <span class="info radius label"><%= ct.tag %></span>
+            <% end %>
+          </td>
+        </tr>
+      </table>
+      </div>
+      <% if (getcurrentusername != "") && (getcurrentusername != "root") %>
+        <% if (@shopitem.stock >= 1) %>
+          <% if (@shopitem.stock <= 5) %>
+            <div class="row">
+              <div data-alert class="alert-box warning radius">
+                Stock is low.
+                <a href="#" class="close">&times;</a>
+              </div>
+            </div>
+          <% end %>
+          <div class="row">
+            <!--Form submit button for here-->
+            <div class="small-7 large-7 columns">
+              <%= hidden_field_tag(:shopitem_id, @shopitem.id) %>
+              <%= number_field(:to_cart, :shopitem_amount, value: 1, in: 1..@shopitem.stock, step: 1) %>
+            </div>
+            <div class="small-5 large-5 columns">
+              <%= submit_tag("Add to cart", class: "button") %>
+            </div>
+          </div>
+        <% else %>
+          <div class="row">
+            <div data-alert class="alert-box alert radius">Out of stock.</div>
+          </div>
+        <% end %>
+      <% end %>
+      <% if getcurrentusername == "root" %>
+        <div class="row">
+          <%= link_to 'Edit', edit_shopitem_path(@shopitem), class: "button"  %>
+          <%= link_to 'Manage', shopitems_path, class: "button" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
 
-<p>
-  <strong>Code name:</strong>
-  <%= @shopitem.code_name %>
-</p>
-
-<p>
-  <strong>Short name:</strong>
-  <%= @shopitem.short_name %>
-</p>
-
-<p>
-  <strong>Long name:</strong>
-  <%= @shopitem.long_name %>
-</p>
-
-<p>
-  <strong>Stock:</strong>
-  <%= @shopitem.stock %>
-</p>
-
-<p>
-  <strong>Price:</strong>
-  <%= @shopitem.price %>
-</p>
-
-<p>
-  <strong>Sales:</strong>
-  <%= @shopitem.sales %>
-</p>
-
-<p>
-  <strong>Image:</strong>
-  <%#= @shopitem.image %>
-  <% if @shopitem.image? %>
-    <%= image_tag @shopitem.image.preview.url %>
-  <% else %>
-    <%= image_tag 'noimage.gif' %>
+  <% if false %>
+    <% @shopitem_images.each do |p| %>
+      <% if p.image? %>
+        <%= image_tag p.image.preview.url %>
+      <% else %>
+        <%= image_tag 'noimage.gif' %>
+      <% end %>
+      <%= link_to "Edit Image", edit_shopitem_image_path(p) %>
+    <% end %>
   <% end %>
-</p>
 
-<p>
-  <strong>Descr:</strong>
-  <%= @shopitem.descr %>
-</p>
-
-<p>
-  <strong>Active</strong>
-  <%= @shopitem.active %>
-</p>
-  
-<% @shopitem_images.each do |p| %>
-  <% if p.image? %>
-    <%= image_tag p.image.preview.url %>
-  <% else %>
-    <%= image_tag 'noimage.gif' %>
-  <% end %>
-  <%= link_to "Edit Image", edit_shopitem_image_path(p) %>
 <% end %>
-
-<%= link_to 'Edit', edit_shopitem_path(@shopitem) %> |
-<%= link_to 'Back', shopitems_path %>

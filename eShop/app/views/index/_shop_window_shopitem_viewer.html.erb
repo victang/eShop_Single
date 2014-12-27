@@ -1,0 +1,76 @@
+    <% if !@shopitems.empty? %>
+      <ul class="small-block-grid-3 medium-block-grid-6 large-block-grid-6">
+      <% @shopitems.each_with_index do |c, i| %>
+        <% next if i < @tmp_count_from %>
+        <% break if i > @tmp_count_to %>
+        <!-- Start of new row per 6 -->
+        <li>
+          <!-- Icon and link to sub-page - Start -->
+          <a class="th" href="#" data-reveal-id="shopitem_<%= c.id %>">
+            <% if c.image.preview_128.file.exists? %>
+              <%= image_tag c.image.preview_128.url, :size => "128x128" %>
+            <% else %>
+              <% if c.image? %>
+                <%= image_tag c.image.url, :size => "128x128" %>
+              <% else %>
+                <%= image_tag 'noimage.gif' %>
+              <% end %>
+            <% end %>
+          </a>
+          <!-- Icon and link to sub-page - End -->
+          <!-- Sub-page - Start -->
+          <div id="shopitem_<%=c.id %>" class="reveal-modal" data-reveal>
+            <h3><%= c.short_name %></h3>
+            <div class="row">
+              <div class="small-6 large-6 columns">
+                <!-- Left side is Orbit window - Start -->
+                <div class="owl-carousel-shopitem">
+                  <div><%= image_tag c.image.url, :size => "800x800" %></div>
+                  <!-- Add extra orbit picture - Start -->
+                  <% if !c.shopitem_images.empty? %>
+                    <% c.shopitem_images.each do |j| %>
+                      <div>
+                        <%= image_tag j.image.url, :size => "800x800" %>
+                      </div>
+                    <% end %>
+                  <% end %>
+                  <!-- Add extra orbit picture - End-->
+                </div>
+              </div>
+              <!-- Left side is Oribit Window - End -->
+              <div class="small-6 large-6 columns">
+                <!-- Right side is Description - Start -->
+                <table>
+                  <tr><td><strong>Full name:</strong></td><td><%= c.long_name %></td></tr>
+                  <tr><td><strong>Stock:</strong></td><td><%= c.stock %></td></tr>
+                  <tr><td><strong>Price (HKD$):</strong></td><td><%= c.price %></td></tr>
+                  <tr><td><strong>Sold:</strong></td><td><%= c.sales %></td></tr>
+                  <tr><td colspan="2"><strong>Description:</strong></td></tr>
+                  <tr><td colspan="2"><%= h(c.descr).gsub(' ', '&nbsp;').gsub(/\n/, '<br />').html_safe %></td></tr>
+                  <tr><td colspan="2"><strong>Tags:</strong></td></tr>
+                  <tr>
+                    <td colspan="2">
+                      <!-- Tags -->
+                      <% c.shopitem_tags.each do |ct| %>
+                        <span class="info radius label"><%= ct.tag %></span>
+                      <% end %>
+                    </td>
+                  </tr>
+                </table>
+                <!-- Button for add to cart, and text field to adjust item number-->
+                <!-- Right side is Description - End -->
+                <% if getcurrentusername == "root" %>
+                  <%= link_to "Edit", {:controller => :shopitems, :action => :edit, :id => c.id }, class: "button" %>
+                  <%= link_to "Details", {:controller => :shopitems, :action => :show, :id => c.id }, class: "button" %>
+                <% end %>
+              </div>
+            </div>
+            <a class="close-reveal-modal">&#215;</a>
+          </div>
+          <!-- Sub-page - End -->
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
+          

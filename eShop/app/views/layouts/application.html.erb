@@ -10,13 +10,21 @@
     <%= javascript_include_tag "vendor/modernizr" %>
     <%= csrf_meta_tags %>
   </head>
-
-  <body>
+  <% if !flash[:notice].nil? %>
+    <% case flash[:notice].to_s.split(';')[0] %>
+    <% when "addtocart" then %>
+      <body onLoad="$('#prompt_addtocart').foundation('reveal', 'open');">
+    <% else %>
+      <body>
+    <% end %>
+  <% else %>
+    <body>
+  <% end %>
     <header>
       <%= render 'layouts/navigation' %>
     </header>
+    <%= render 'layouts/warning' %>
     <main role="main">
-      
       <%= yield %>
     </main>
     <footer>

@@ -84,6 +84,31 @@ class ShopitemsController < ApplicationController
     end
   end
 
+  def addtocart
+    # add instruction here!!!
+    if authenticate_user == true
+      params.permit!
+      if !params[:shopitem_id].nil?        
+        # id exist in record without batch, draw it out
+        # if not found on existing record, add new
+        @new_cart_item = Cart.new
+        @new_cart_item.user_id = session[:user_id]
+        @new_cart_item.batch_id = 0
+        @new_cart_item.shopitem_id = params[:shopitem_id].to_i
+        @new_cart_item.shopitem_amount = params[:to_cart][:shopitem_amount].to_i
+        @new_cart_item.pay_amount = Shopitem.find_by_id(params[:shopitem_id].to_i).price * @new_cart_item.shopitem_amount
+        @new_cart_item.selected = false
+      
+        if @new_cart_item.save
+          flash[:notice] = "addtocart;".concat(@new_cart_item.id.to_s).concat("True") # command: "addtocart", {cart ID}
+        else
+          flash[:notice] = "addtocart;".concat(@new_cart_item.id.to_s).concat("False") # command: "addtocart", {cart ID}
+        end
+      end
+    end
+    redirect_to :controller => "shopitems", :action => "show", :id => params[:shopitem_id]
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_shopitem
