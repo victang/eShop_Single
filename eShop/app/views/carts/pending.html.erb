@@ -1,8 +1,10 @@
 <% if !@pending_cart.empty? %>
   <%= form_tag({controller: "carts", action: "edit_pending"}, method: "post") do %>
+    <br />
     <table>
       <tr>
         <th>Selected</th>
+        <th>Pending ID</th>
         <th>Product</th>
         <th>Unit Price</th>
         <th>Unit</th>
@@ -13,13 +15,18 @@
         <% @tmp_shopitem = Shopitem.find(c.shopitem_id) %>
         <tr>
           <td><%= check_box_tag(:selected) %></td>
+          <td><%= c.id %></td>
           <td><%= @tmp_shopitem.long_name%></td>
           <td><%= @tmp_shopitem.price%></td>
-          <td><%= c.shopitem.amount %></td>
+          <td><%= c.shopitem_amount %></td>
           <td><%= c.pay_amount %></td>
         </tr>
       <% end %>
     </table>
+    <br />
+    <!-- Apply change or checkout -->
+    <%= submit_tag("Apply change", class: "button") %>
+    <%= link_to 'Checkout', {controller: "carts", action: "checkout"}, class: "button" %>
   <% end %>
 <% else %>
   <div data-alert class="alert-box info radius">

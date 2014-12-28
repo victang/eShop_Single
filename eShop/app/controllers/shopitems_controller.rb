@@ -88,21 +88,33 @@ class ShopitemsController < ApplicationController
     # add instruction here!!!
     if authenticate_user == true
       params.permit!
-      if !params[:shopitem_id].nil?        
-        # id exist in record without batch, draw it out
-        # if not found on existing record, add new
-        @new_cart_item = Cart.new
-        @new_cart_item.user_id = session[:user_id]
-        @new_cart_item.batch_id = 0
-        @new_cart_item.shopitem_id = params[:shopitem_id].to_i
-        @new_cart_item.shopitem_amount = params[:to_cart][:shopitem_amount].to_i
-        @new_cart_item.pay_amount = Shopitem.find_by_id(params[:shopitem_id].to_i).price * @new_cart_item.shopitem_amount
-        @new_cart_item.selected = false
-      
-        if @new_cart_item.save
-          flash[:notice] = "addtocart;".concat(@new_cart_item.id.to_s).concat("True") # command: "addtocart", {cart ID}
+      if !params[:shopitem_id].nil?
+        if !Cart.where("batch_id = 0 AND user_id = ? AND shopitem_id = ?", session[:user_id], params[:shopitem_id]).empty?        
+          # id exist in record without batch, draw it out
+          @existing_cart_item = Cart.where("batch_id = 0 AND user_id = ? AND shopitem_id = ?", session[:user_id], params[:shopitem_id]).first
+          @existing_cart_item.shopitem_amount += params[:to_cart][:shopitem_amount].to_i
+          @existing_cart_item.pay_amount = Shopitem.find_by_id(params[:shopitem_id].to_i).price * @existing_cart_item.shopitem_amount
+
+          if @existing_cart_item.save
+            flash[:notice] = "addtocart;".concat(@existing_cart_item.id.to_s).concat("True") # command: "addtocart", {cart ID}
+          else
+            flash[:notice] = "addtocart;".concat(@existing_cart_item.id.to_s).concat("False") # command: "addtocart", {cart ID}
+          end
         else
-          flash[:notice] = "addtocart;".concat(@new_cart_item.id.to_s).concat("False") # command: "addtocart", {cart ID}
+          # if not found on existing record, add new
+          @new_cart_item = Cart.new
+          @new_cart_item.user_id = session[:user_id]
+          @new_cart_item.batch_id = 0
+          @new_cart_item.shopitem_id = params[:shopitem_id].to_i
+          @new_cart_item.shopitem_amount = params[:to_cart][:shopitem_amount].to_i
+          @new_cart_item.pay_amount = Shopitem.find_by_id(params[:shopitem_id].to_i).price * @new_cart_item.shopitem_amount
+          @new_cart_item.selected = false
+        
+          if @new_cart_item.save
+            flash[:notice] = "addtocart;".concat(@new_cart_item.id.to_s).concat("True") # command: "addtocart", {cart ID}
+          else
+            flash[:notice] = "addtocart;".concat(@new_cart_item.id.to_s).concat("False") # command: "addtocart", {cart ID}
+          end
         end
       end
     end
