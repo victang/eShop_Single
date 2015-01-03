@@ -59,7 +59,25 @@ class CartsController < ApplicationController
   end
 
   def edit_pending
-
+    if !params[:cart].nil?
+      if !params[:cart][:del].nil?
+        params[:cart][:del].each_with_index do |c, k|
+          if c == true
+            @tmp_rec = Cart.where("id = ?", k)
+            if !@tmp_rec.empty?
+              Cart.where("id = ?", k).destory_all
+            end
+          end
+        end 
+      end
+      
+      if !params[:cart][:unit].nil?
+        params[:cart][:unit].each_with_index do |k, c|
+          
+        end 
+      end
+    end
+    redirect_to controller: "carts", action: "pending"
   end
 
   def check_out

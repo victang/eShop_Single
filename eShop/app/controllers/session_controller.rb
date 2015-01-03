@@ -17,12 +17,18 @@ class SessionController < ApplicationController
     if authorized_user
       session[:user_id] = authorized_user.id
       @current_user = User.find session[:user_id]
-      flash[:notice] = "Wow Welcome again, you logged in as #{authorized_user.username}"
+      # flash[:notice] = "Wow Welcome again, you logged in as #{authorized_user.username}"
       redirect_to root_path # later return to shop
     else
-      flash[:notice] = "Invalid Username or Password"
+      if User.where(username: params[:username_or_email]).empty? && User.where(email: params[:username_or_email]).empty?
+        flash[:alert] = "login;nouser"
+      else
+        flash[:alert] = "login;wrongpassword"
+      end
       # flash[:color] = "invalid"
-      render "login"
+      # render "login"
+      flash[:userid] = params[:username_or_email]
+      redirect_to :controller => "session", :action => "login"
     end
   end
   

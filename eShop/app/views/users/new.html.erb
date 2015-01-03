@@ -5,18 +5,82 @@
     <a href="#" class="close">&times;</a>
   </div>
 <% end %>
-<h1> Sign Up </h1>
-<%= form_for(:user, :url => {:controller => 'users', :action => 'create'}) do |f| %>
-  <p> Username:<br />               <%= f.text_field :username %>                 </p>
-  <p> Email:<br />                  <%= f.text_field :email %>                    </p>
-  <p> Password:<br />               <%= f.password_field :password %>              </p>
-  <p> Password Confirmation: <br /> <%= f.password_field :password_confirmation %> </p>
-  <%= f.submit :Signup%>
-<% end %>
-<% if @user.errors.any? %>
-  <ul class="Signup_Errors">
-    <% for message_error in @user.errors.full_messages %>
-    <li>* <%= message_error%></li>
+
+<% if !flash[:notice].nil? %>
+  <% if flash[:notice].to_s.split(';')[0] == "newuser" %>
+    <% case flash[:notice].to_s.split(';')[1] %>
+    <% when "fail" then %>
+      <div data-alert class="alert-box alert round">
+        User creation failure. 
+        <% case flash[:notice].to_s.split(';')[2] %>
+        <% when "userexist" then %>
+          (Username / E-mail already existed in our registrations.)
+        <% when "passwordnotmatch" then %>
+          (The 2 passwords are not the same.)
+        <% else %>
+          (Internal Error.)
+        <% end %>
+        <a href="#" class="close">&times;</a>
+      </div>
+    <% when "recaptchafail" then %>
+      <div data-alert class="alert-box alert round">
+        Google reCAPTCHA failure. 
+        <% case flash[:notice].to_s.split(';')[2] %>
+        <% when "notcompleted" then %>
+          (reCAPTCHA has not been completed.)
+        <% else %>
+          (<%= flash[:notice].to_s.split(';')[2] %>)
+        <% end %>
+        <a href="#" class="close">&times;</a>
+      </div>
+    <% else %>
     <% end %>
-  </ul>
+  <% end %>
 <% end %>
+
+<div class="row" style="width: auto; max-width: 600px;">
+  <div class="small-12 large-12 columns">
+    <div class="panel">
+      <h1> Sign Up </h1>
+      <%= form_for(:user, :url => {:controller => 'users', :action => 'create'}, :data => {:abide => ''}) do |f| %>
+        <div class="name-field">
+          <label> 
+            Username: <small>Required</small><br />
+            <%= f.text_field :username, :required => '', :pattern => "alpha_numeric" %>
+            <small class="error">Username can only be alphanumeric.</small>
+          </label>
+        </div>
+        <div class="email-field">
+          <label> 
+            Email: <small>Required (You need a real E-mail to confirm purchase orders)</small><br />
+            <%= f.text_field :email, :required => '', :pattern => "email" %>
+            <small class="error">Invalid E-mail format.</small>
+          </label>
+        </div>
+        <div class="password-field">
+          <label> 
+            Password: <small>Required</small><br />
+            <%= f.password_field :password, :required => ''%>
+            <small class="error">Password is required.</small>
+          </label>
+        </div>
+        <div class="confirm-password-field">
+          <label> 
+            Password Confirmation: <small>Required</small><br /> 
+            <%= f.password_field :password_confirmation, :required => '', :data => {:equalto => 'user_password'} %> 
+            <small class="error">The 2 passwords MUST be identical.</small>
+          </label>
+        </div>
+        <div class="row">
+          <div class="small-12 large-12 columns">
+            <div class="g-recaptcha" data-sitekey="<%= Recaptcha.configuration.public_key %>"></div>
+            <br />
+            <%#= recaptcha_tags %>
+          </div>
+        </div>
+        <br />
+        <%= f.submit :Signup, class: "button" %>
+      <% end %>
+    </div>
+  </div>
+</div>

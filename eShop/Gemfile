@@ -29,7 +29,7 @@ gem 'spring',        group: :development
 
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7' # Activated by Victor Tang for Ver. 0.1
-
+gem 'recaptcha', '~> 0.3.6'
 # Use unicorn as the app server
 # gem 'unicorn'
 

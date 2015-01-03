@@ -1,32 +1,138 @@
 <% if !@pending_cart.empty? %>
   <%= form_tag({controller: "carts", action: "edit_pending"}, method: "post") do %>
     <br />
-    <table>
-      <tr>
-        <th>Selected</th>
-        <th>Pending ID</th>
-        <th>Product</th>
-        <th>Unit Price</th>
-        <th>Unit</th>
-        <th>Sub-Total</th>
-      </tr>
-      <% @pending_cart.each do |c| %>
-        <% @tmp_shopitem = nil %>
-        <% @tmp_shopitem = Shopitem.find(c.shopitem_id) %>
-        <tr>
-          <td><%= check_box_tag(:selected) %></td>
-          <td><%= c.id %></td>
-          <td><%= @tmp_shopitem.long_name%></td>
-          <td><%= @tmp_shopitem.price%></td>
-          <td><%= c.shopitem_amount %></td>
-          <td><%= c.pay_amount %></td>
-        </tr>
-      <% end %>
-    </table>
-    <br />
-    <!-- Apply change or checkout -->
-    <%= submit_tag("Apply change", class: "button") %>
-    <%= link_to 'Checkout', {controller: "carts", action: "checkout"}, class: "button" %>
+    <div class="row">
+      <div class="small-12 large-12 columns">
+        <%= link_to 'Reload', "/cart", role: "button", class: "button", id: "link_reload" %>
+        <table>
+          <col width="50" align="center">
+          <col width="130" algin="center">
+          <col width="400" align="left">
+          <col width="100" align="right">
+          <col width="100" align="right">
+          <col width="130" align="right">
+          <tr>
+            <th style="text-align:center">Del</th>
+            <th style="text-align:center">Preview</th>
+            <th style="text-align:left">Product</th>
+            <th style="text-align:right">Unit Price</th>
+            <th style="text-align:right">Unit</th>
+            <th style="text-align:right">Sub-Total</th>
+          </tr>
+          <% @tmp_paytotal = 0 %>
+          <% @pending_cart.each do |c| %>
+            <% @tmp_shopitem = nil %>
+            <% @tmp_shopitem = Shopitem.find(c.shopitem_id) %>
+            <tr>
+              <td style="text-align:center">
+                <%#= check_box_tag(:selected) %>
+                <input type="checkbox" id="cart_del_<%= c.id %>" name="cart[del][<%= c.id %>]" onclick="cal_subtotal(<%= c.id %>)" value="true"/>
+              </td>
+              <td style="text-align:center">
+                <% if @tmp_shopitem.image.preview_128.file.exists? %>
+                  <%= image_tag @tmp_shopitem.image.preview_128.url, :size => "128x128" %>
+                <% else %>
+                  <% if @tmp_shopitem.image? %>
+                    <%= image_tag @tmp_shopitem.image.url, :size => "128x128" %>
+                  <% else %>
+                    <%= image_tag 'noimage.gif' %>
+                  <% end %>
+                <% end %>
+              </td>
+              <td style="text-align:left">
+                <%= @tmp_shopitem.long_name%>
+                <% if @tmp_shopitem.stock < c.shopitem_amount %>
+                <small>
+                  <div data-alert class="alert-box alert radius">
+                    Order adjusted automatically due to stock shortage.
+                    <a href="#" class="close">&times;</a>
+                  </div>
+                </small>
+                <% end %>
+              </td>
+              <td style="text-align:right">
+                <%= @tmp_shopitem.price.round(2) %>
+                <input type="hidden" id="cart_unitprice_<%= c.id %>" name="cart[unitprice][<%= c.id %>]" value="<%= @tmp_shopitem.price.round(2) %>" />
+              </td>
+              <td style="text-align:right">
+                <input type="hidden" id="cart_unitold_<%= c.id %>" name="cart[unitold][<%= c.id %>]" value="<%= c.shopitem_amount %>"/>
+                <input type="number" id="cart_unit_<%= c.id %>" name="cart[unit][<%= c.id %>]" value="<%= c.shopitem_amount %>" min="0" max="<%= @tmp_shopitem.stock %>" oninput="cal_subtotal(<%= c.id %>)" />
+              </td>
+              <td style="text-align:right">
+                
+                <input type="text" id="cart_subtotal_<%= c.id %>" name="cart[subtotal][<%= c.id %>]" value="<%= c.pay_amount.round(2) %>" readonly="true" />
+                <% @tmp_paytotal += c.pay_amount %>
+              </td>
+            </tr>
+          <% end %>
+          <tr>
+            <td colspan="5" style="text-align:right"><b>Total: </b></td>
+            <td style="text-align:right"><b><input type="text" id="cart_paytotal" name="cart[paytotal]" value="<%= @tmp_paytotal.round(2) %>" readonly="true" /></b></td>
+          </tr>
+        </table>
+        <script>
+          function cal_subtotal(item_id)
+          {
+            if (document.getElementById('cart_del_' + item_id).checked == true)
+            {
+              document.getElementById('cart_unit_' + item_id).value = 0;
+              document.getElementById('cart_unit_' + item_id).readOnly = true;
+              document.getElementById('cart_subtotal_' + item_id).value = 0;
+            }
+            else
+            {
+              document.getElementById('cart_unit_' + item_id).readOnly = false;              
+              document.getElementById('cart_subtotal_' + item_id).value = document.getElementById('cart_unit_' + item_id).value * document.getElementById('cart_unitprice_' + item_id).value;
+            document.getElementById('cart_subtotal_' + item_id).value = Math.round(document.getElementById('cart_subtotal_' + item_id).value * 100) / 100;
+            }
+            
+            if ((document.getElementById('cart_unit_' + item_id).value != document.getElementById('cart_unitold_' + item_id).value) || (document.getElementById('cart_del_' + item_id).value == true))
+            {
+              document.getElementById('link_checkout').disabled = true;
+              document.getElementById('link_checkout').removeAttribute('href'); 
+              document.getElementById('link_checkout').style.cursor = 'default';
+              document.getElementById('link_checkout').className = 'button disabled';
+              document.getElementById('link_submit').className = 'button alert';
+            }  
+            else
+            {
+              document.getElementById('link_checkout').disabled = false;
+              document.getElementById('link_checkout').href = '/carts/checkout';
+              document.getElementById('link_checkout').style.cursor = 'hand';
+              document.getElementById('link_checkout').className = 'button success';
+              document.getElementById('link_submit').className = 'button secondary';
+            }
+              
+            document.getElementById('cart_paytotal').value = 
+            <% @item_cnter = 0 %>
+            <% @pending_cart.each do |c| %>
+              <% if @item_cnter > 0 %>
+                + document.getElementById('cart_unit_<%= c.id %>').value * document.getElementById('cart_unitprice_<%= c.id %>').value
+              <% else %>
+                document.getElementById('cart_unit_<%= c.id %>').value * document.getElementById('cart_unitprice_<%= c.id %>').value
+              <% end %>
+              <% @item_cnter += 1 %>
+            <% end %>
+            ;
+            document.getElementById('cart_paytotal').value = Math.round(document.getElementById('cart_paytotal').value * 100) / 100;
+          }
+          window.onload = function(){
+            <% @pending_cart.each do |c| %>
+            <% @tmp_shopitem = nil %>
+            <% @tmp_shopitem = Shopitem.find(c.shopitem_id) %>
+              <% if @tmp_shopitem.stock < c.shopitem_amount %>
+                document.getElementById('cart_unit_<%= c.id %>').value = <%= @tmp_shopitem.stock %>;
+                cal_subtotal(<%= c.id %>);
+              <% end %>
+            <% end %>
+          };
+        </script>
+        <br />
+        <!-- Apply change or checkout -->
+        <%= submit_tag("Apply change", class: "button secondary" , id: "link_submit") %>
+        <%= link_to 'Checkout the above', {controller: "carts", action: "checkout"}, role: "button success", class: "button", id: "link_checkout" %>
+      </div>
+    </div>
   <% end %>
 <% else %>
   <div data-alert class="alert-box info radius">

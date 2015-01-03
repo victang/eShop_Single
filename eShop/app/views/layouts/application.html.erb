@@ -9,6 +9,7 @@
     <%= stylesheet_link_tag    "application" %>
     <%= javascript_include_tag "vendor/modernizr" %>
     <%= csrf_meta_tags %>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
   </head>
   <% if !flash[:notice].nil? %>
     <% case flash[:notice].to_s.split(';')[0] %>

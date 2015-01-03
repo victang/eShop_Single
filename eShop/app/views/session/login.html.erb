@@ -1,10 +1,50 @@
 <% @page_title = "UserAuth | Login" -%>
-
-<div class="Sign_Form">
-  <h1>Log in</h1>
-  <%= form_tag(:action => 'login_attempt') do %>
-    <p>Username or Email:</br> <%= text_field_tag(:username_or_email) %></p>
-    <p>Password:</br> <%= password_field_tag :login_password %></p>
-    <%= submit_tag("Log In") %>
+<% if !flash[:notice].nil? %>
+  <% if flash[:notice].to_s.split(';')[0] == "newuser" %>
+    <% case flash[:notice].to_s.split(';')[1] %>
+    <% when "success" then %>
+      <div data-alert class="alert-box info radius">
+        User creation success. Please try to signin.
+        <a href="#" class="close">&times;</a>
+      </div>
+    <% else %>
+    <% end %>
   <% end %>
+<% end %>
+<div class="row" style="width: auto; max-width: 400px;">
+  <div class="small-12 large-12 columns">
+    <div class="panel">
+      <h1>Log in</h1>
+      <%= form_tag(:action => 'login_attempt') do %>
+        <div class="row">
+          <% if flash[:alert] == "login;nouser" %>
+            <div class="small-12 large-12 columns error">
+          <% else %>
+            <div class="small-12 large-12 columns">
+          <% end %>
+            <label>
+              Username or Email:</br> 
+              <%= text_field_tag(:username_or_email, flash[:userid]) %>
+            </label>
+            <% if flash[:alert] == "login;nouser" %>
+              <small class="error">Invalid User/Email. Please <%= link_to "signup", controller: :users, action: :new %> if you are new to here.</small>
+            <% end %>
+          </div>
+        </div>
+        <div class="row">
+          <% if flash[:alert] == "login;wrongpassword" %>
+            <div class="small-12 large-12 columns error">
+          <% else %>
+            <div class="small-12 large-12 columns">
+          <% end %>  
+            <label>Password:</br> <%= password_field_tag :login_password %></label>
+            <% if flash[:alert] == "login;wrongpassword" %>
+              <small class="error">Invalid Password.</small>
+            <% end %>
+          </div>
+        </div>
+        <%= submit_tag "Log In", class: :button %>
+      <% end %>
+    </div>
+  </div>
 </div>

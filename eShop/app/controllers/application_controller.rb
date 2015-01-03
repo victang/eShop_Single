@@ -4,10 +4,41 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   helper_method :getitemperpage, :getcurrentusername, :getcurrentuseremail, \
-                :checkrootexist, :getshopitemmaxpagenum, :not_found
+                :checkrootexist, :getshopitemmaxpagenum, :not_found, \
+                :grecaptcha_result
 
   before_filter :authenticate_user
   before_filter :checkrootexistwithaction
+
+  def grecaptcha_result(recaptcha_param)
+    @g_recaptcha_response_URL= "https://www.google.com/recaptcha/api/siteverify"
+        
+    @g_query = {
+      "secret" => Recaptcha.configuration.private_key,
+      "response" => recaptcha_param,
+      "remoteip" => request.remote_ip
+    }
+        
+    if recaptcha_param
+      if recaptcha_param != ""
+        @g_request = URI.parse(@g_recaptcha_response_URL + '?' + @g_query.to_query)
+        @http = Net::HTTP
+        @http_instance = @http.new(@g_request.host, @g_request.port)
+        if @g_request.port == 443
+          @http_instance.use_ssl = 
+          @http_instance.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        end
+        @g_request_q = Net::HTTP::Get.new(@g_request.request_uri)
+        @g_result = @http_instance.request(@g_request_q)
+        @g_return_0, @g_return_1 = JSON.parse(@g_result.body).values
+        return [@g_return_0, @g_return_1]
+      else
+        return nil
+      end
+    else
+      return nil
+    end
+  end
 
   def not_found
     raise ActionController::RoutingError.new('Not Found')
