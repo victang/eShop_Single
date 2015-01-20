@@ -32,7 +32,8 @@ Rails.application.routes.draw do
   match 'index', to: 'index#index', via: [:get, :post] # default index page routing #2
   # match '/session_cart', to: 'carts#session_cart', :via => :get
   match 'cart', to: 'carts#pending', via: [:get, :post]
-  post 'carts/checkout'
+  match 'checkout', to: 'carts#checkout', via: [:get, :post]
+  post 'carts/save_checkout'
   post 'carts/edit_pending'
   # match '/add_to_cart', to: 'carts#add', :via => :post
   post 'shopitems/addtocart'

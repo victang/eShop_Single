@@ -130,7 +130,7 @@
         <br />
         <!-- Apply change or checkout -->
         <%= submit_tag("Apply change", class: "button secondary" , id: "link_submit") %>
-        <%= link_to 'Checkout the above', {controller: "carts", action: "checkout"}, role: "button success", class: "button", id: "link_checkout" %>
+        <%= link_to 'Checkout the above', "/checkout", role: "button success", class: "button", id: "link_checkout" %>
       </div>
     </div>
   <% end %>
@@ -139,3 +139,4 @@
     You shopping cart is empty
   </div>
 <% end %>
+

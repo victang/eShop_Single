@@ -60,4 +60,6 @@ gem 'carrierwave'
 gem 'foundation-datetimepicker-rails'
 
 gem 'owlcarousel-rails'
+
+gem 'paypal-sdk-rest'
 # Add by Victor Tang for Ver. 0.1 -- End

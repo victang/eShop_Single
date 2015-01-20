@@ -1,3 +1,6 @@
+require 'paypal-sdk-rest'
+include PayPal::SDK::REST
+
 class CartsController < ApplicationController
   before_action :set_cart, only: [:show, :edit, :update, :destroy]
   protect_from_forgery with: :null_session
@@ -59,29 +62,126 @@ class CartsController < ApplicationController
   end
 
   def edit_pending
-    if !params[:cart].nil?
-      if !params[:cart][:del].nil?
-        params[:cart][:del].each_with_index do |c, k|
-          if c == true
-            @tmp_rec = Cart.where("id = ?", k)
-            if !@tmp_rec.empty?
-              Cart.where("id = ?", k).destory_all
-            end
+    if params['cart']
+      if params['cart']['del']
+        params['cart']['del'].each do |c, k|
+          if c != 0
+            if k.to_s == 'true'
+              Rails.logger.debug("debug: c = " + c.to_s + "; k = " + k.to_s)
+              Cart.delete(c.to_s)
+              # @tmp_rec = Cart.delete(c.to_s)
+            end 
           end
         end 
       end
       
-      if !params[:cart][:unit].nil?
-        params[:cart][:unit].each_with_index do |k, c|
-          
+      if params['cart']['unit']
+        params['cart']['unit'].each do |c, k|
+          if c != 0
+            Rails.logger.debug("debug: unit.c = " + c.to_s + "; unit.k = " + k.to_s + "; unitold.k = " + params['cart']['unitold'][c.to_s].to_s + ";")
+            if k.to_i != params['cart']['unitold'][c.to_s].to_i
+              Rails.logger.debug("Start Update.")
+              @tmp_rec = Cart.find(c.to_s)
+              @tmp_rec.shopitem_amount = k.to_i
+              @tmp_rec.save
+            end
+          end
         end 
       end
     end
     redirect_to controller: "carts", action: "pending"
   end
 
-  def check_out
+  def checkout
+    @pending_cart = Cart.where("(batch_id = 0) AND (user_id = ?)", session[:user_id])
+    @new_batch = Batch.new
+  end
+  
+  def save_checkout
+    @new_batch = Batch.new
     
+    @new_batch.code = "0"
+    @new_batch.status = 0
+    @new_batch.remark = "[System] New Order Generated."
+    @new_batch.active = true
+    @new_batch.user_id = session[:user_id]
+    @new_batch.email = params[:batch][:email]
+    @new_batch.fullname = params[:batch][:fullname]
+    @new_batch.address1 = params[:batch][:address1]
+    @new_batch.address2 = params[:batch][:address2]
+    @new_batch.address3 = params[:batch][:address3]
+    @new_batch.address4 = params[:batch][:address4]
+    @new_batch.address5 = params[:batch][:address5]
+    @new_batch.address6 = params[:batch][:address6]
+    @new_batch.country = params[:batch][:country]
+    @new_batch.city = params[:batch][:city]
+    @new_batch.phone = params[:batch][:phone]
+    @new_batch.user_remark = params[:batch][:remark]
+    @new_batch.mailagent = params[:batch][:serviceprovider]
+    @new_batch.mailfee = params[:batch][:mailfee]
+    if @new_batch.save 
+      # if saved, bring all the cart items in
+      Cart.where("(batch_id = 0) AND (user_id = ?)", session[:user_id]).update_all(:batch_id => @new_batch.id)
+      flash[:notice] = "checkout;success;gotopaypal"
+      
+      @tmp_thiscart = Cart.where("(batch_id = ?) AND (user_id = ?)", @new_batch.id, session[:user_id])
+      
+      @tmp_itemlist = Array.new
+      @tmp_thiscart.each_with_index do |element, content|
+        @tmp_shopitem = Shopitem.find(content.shopitem_id)
+        @tmp_itemlist.push({
+          :name => "item",
+          :sku => "item",
+          :price => "1",
+          :currency => "HKD",
+          :quantity => 1
+        })
+      end
+      
+      @payment = Payment.new({
+        :intent => "sale",
+        :payer => {
+          :payment_method => "credit_card",
+          :funding_instruments => [{
+            :credit_card => {
+              :type => params[:card][:type],
+              :number => params[:card][:number],
+              :expire_month => params[:card][:expire_month],
+              :expire_year => params[:card][:expire_year],
+              :cvv2 => params[:card][:cvv2],
+              :first_name => params[:card][:first_name],
+              :last_name => params[:card][:last_name],
+              :bill_address => {
+                :line1 => params[:card][:bill_address][:line1],
+                :line2 => params[:card][:bill_address][:line2],
+                :city => params[:card][:bill_address][:city],
+                :state => params[:card][:bill_address][:state],
+                :postal_code => params[:card][:bill_address][:postal_code],
+                :country_code => params[:card][:bill_address][:country_code]
+              }
+            }
+          }]
+        },
+        :transactions => [{
+          :item_list => {
+            :items => [@tmp_itemlist]
+          },
+          amount => {
+            :total => params[:batch][:finalpayment],
+            :currency => "HKD"
+          },
+          :description => "Payment Batch ID: " + @new_batch.id.to_s + "; Pay by PayPal."
+        }]
+      })
+      if @payment.create
+        flash[:notice] = "paypal;success;" + @payment.id.to_s
+      else
+        flash[:notice] = "paypal;fail;" + @payment.error.to_s
+      end
+    else
+      flash[:notice] = "checkout;fail;cannotsave"
+      redirect_to controller: "carts", action: "checkout"
+    end
   end
   
   # GET /carts/1/edit

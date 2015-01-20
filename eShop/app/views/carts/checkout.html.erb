@@ -1,0 +1,289 @@
+<% if !@pending_cart.empty? %>
+  <%= form_tag({controller: "carts", action: "save_checkout"}, method: "post", :data => {:abide => ''}) do %>
+    <br />
+    <div class="row">
+      <div class="small-12 large-12 columns">
+        <h2>Summary of purchase (Without delivery fee)</h2>
+        <table>
+          <col width="130" align="center">
+          <col width="400" align="left">
+          <col width="100" align="right">
+          <col width="100" align="right">
+          <col width="130" align="right">
+          <tr>
+            <th style="text-align:center">Preview</th>
+            <th style="text-align:left">Product</th>
+            <th style="text-align:right">Unit Price</th>
+            <th style="text-align:right">Unit</th>
+            <th style="text-align:right">Sub-Total</th>
+          </tr>
+          <% @tmp_cansubmit = true %>
+          <% @tmp_paytotal = 0 %>
+          <% @pending_cart.each do |c| %>
+            <% @tmp_shopitem = nil %>
+            <% @tmp_shopitem = Shopitem.find(c.shopitem_id) %>
+            <tr>
+              <td style="text-align:center">
+                <% if @tmp_shopitem.image.preview_128.file.exists? %>
+                  <%= image_tag @tmp_shopitem.image.preview_128.url, :size => "128x128" %>
+                <% else %>
+                  <% if @tmp_shopitem.image? %>
+                    <%= image_tag @tmp_shopitem.image.url, :size => "128x128" %>
+                  <% else %>
+                    <%= image_tag 'noimage.gif' %>
+                  <% end %>
+                <% end %>
+              </td>
+              <td style="text-align:left">
+                <%= @tmp_shopitem.long_name%>
+                <% if @tmp_shopitem.stock < c.shopitem_amount %>
+                <small>
+                  <div data-alert class="alert-box alert radius">
+                    Due to stock shortage. The checkout cannot be submitted.
+                    <% @tmp_cansubmit = false %>
+                    <a href="#" class="close">&times;</a>
+                  </div>
+                </small>
+                <% end %>
+              </td>
+              <td style="text-align:right">
+                <%= @tmp_shopitem.price.round(2) %>
+                <input type="hidden" id="cart_unitprice_<%= c.id %>" name="cart[unitprice][<%= c.id %>]" value="<%= @tmp_shopitem.price.round(2) %>" />
+              </td>
+              <td style="text-align:right">
+                <input type="hidden" id="cart_unitold_<%= c.id %>" name="cart[unitold][<%= c.id %>]" value="<%= c.shopitem_amount %>"/>
+                 <%= c.shopitem_amount %>
+              </td>
+              <td style="text-align:right">
+                <%= c.pay_amount.round(2) %>
+                <% @tmp_paytotal += c.pay_amount %>
+              </td>
+            </tr>
+          <% end %>
+          <tr>
+            <td colspan="4" style="text-align:right"><b>Total: </b></td>
+            <td style="text-align:right"><b><%= @tmp_paytotal.round(2) %></b></td>
+            <input type="hidden" id="cart_paytotal" name="cart[paytotal]" value="><%= @tmp_paytotal.round(2) %>"/>
+          </tr>
+        </table>
+        <br />
+        <% if @tmp_cansubmit == true %>
+          <h2>Delivery details and total</h2>
+          <div class="panel">
+            <div class="row">
+              <div class="medium-6 large-6 columns" style="max-width:500px;">
+                <div class="reicipent-name-field">
+                  <label>
+                    Reicipent Full Name:<small>Required</small>
+                    <input type="text" required id="batch_fullname" name="batch[fullname]" />
+                  </label>
+                  <small class="error">Reicipent name is required.</small>
+                </div>
+                <div class="email-field">
+                  <label>
+                    Email:<small>Required</small>
+                    <input type="text" required id="batch_email" name="batch[email]" pattern="email" />
+                  </label>
+                  <small class="error">E-mail is required.</small>
+                </div>
+                
+                <div class="address-feld">
+                  <label>
+                    Address:<small>Required</small>
+                    <input type="text" required id="batch_address1" name="batch[address1]" />
+                  </label>
+                  <small class="error">Address is required for delivery.</small>
+                </div>
+                <input type="text" id="batch_address2" name="batch[address2]" />
+                
+                City:<br />
+                <input type="text" id="batch_city" name="batch[city]" />
+                Country:
+                <select id="batch_country" name="batch[country]">
+                  <% Country.all.each do |co| %>
+                    <% if co.countryid == "HK" %>
+                      <option value="<%= co.countryid %>" selected><%= co.countryname %></option>
+                    <% else %>
+                      <option value="<%= co.countryid %>"><%= co.countryname %></option>
+                    <% end %>
+                  <% end %>
+                </select>
+                <div class="phone-field">
+                  <label>
+                    Phone number for the delivery:<small>Required</small>
+                    <input type="text" required id="batch_phone" name="batch[phone]" />
+                  </label>
+                  <small class="error">Phone number is required for delivery</small>
+                </div>
+              </div>
+              <div class="medium-6 large-6 columns" style="max-width:500px;">
+                <div class="panel">
+                  <h4>Card payment details</h4><small>This will be sent to PayPal directly without saving to our database.</small>
+                  
+                  <div class="row">
+                    <div class="small-4 large-4 columns">
+                      Type:
+                      <div class="card-type">
+                        <select id="card_type" name="card[type]">
+                          <option value="visa" selected>VISA</option>
+                          <option value="mastercard">Mastercard</option>
+                          <option value="discover">DISCOVER</option>
+                          <option value="amex">American Express</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="small-6 large-6 columns">
+                      <div class="card-number">
+                        <label>
+                          Card Number:<small>Required</small>
+                          <input type="text" required id="card_number" name="card[number]" />
+                        </label>
+                        <small class="error">Card number required.</small>
+                      </div>
+                    </div>
+                    <div class="small-2 large-2 columns">
+                      <div class="card-cvv2">
+                        <label>
+                          CVV2:<small>Required</small>
+                          <input type="text" required id="card_cvv2" name="card[cvv2]" />
+                        </label>
+                        <small class="error">Card number required.</small>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="small-4 large-4 columns">
+                      Expire Date:<small>Required</small>
+                      <div class="row">
+                        <div class="small-6 large-6 columns">
+                          <div class="card-expire-month">
+                            <label>
+                              Month:
+                              <select id="card_expire_month" name="card[expire_month]">
+                              <input type="text" id="card_expire_month" name="card[expire_month]" />
+                            </label>
+                          </div>
+                        </div>
+                        <div class="small-6 large-6 columns">
+                          <div class="card-expire-year">
+                            <label>
+                              Year:
+                              <input type="text" id="card_expire_year" name="card[expire_year]" />
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="small-8 large-8 columns">
+                      Name:<small>Required</small>
+                      <div class="row">
+                        <div class="small-6 large-6 columns">
+                          <div class="card-first-name">
+                            <label>
+                              First Name:
+                              <input type="text" id="card_first_name" name="card[first_name]" />
+                            </label>
+                          </div>
+                        </div>
+                        <div class="small-6 large-6 columns">
+                          <div class="card-last-name">
+                            <label>
+                              Last Name:
+                              <input type="text" id="card_last_name" name="card[last_name]" />
+                            </label>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="card-address-line1">
+                    <label>
+                      Card billing address:
+                      <input type="text" id="card_address_line1" name="card[address][line1]" />
+                    </label>
+                  </div>
+                  <div class="card-address-line2">
+                    <label>
+                      <input type="text" id="card_address_line2" name="card[address][line2]" />
+                    </label>
+                  </div>
+                  <div class="row">
+                    <div class="small-3 large-3 columns">
+                      <div class="card-address-city">
+                        <label>
+                          City:
+                          <input type="text" id="card_city" name="card[city]" />
+                        </label>
+                      </div>
+                    </div>
+                    <div class="small-4 large-4 columns">
+                      <div class="card-address-country-code">
+                        <label>
+                          Country:
+                          <input type="text" id="card_address_country_code" name="card[address][country_code]" />
+                        </label>
+                      </div>
+                    </div>
+                    <div class="small-3 large-3 columns">
+                      <div class="card-address-postal-code">
+                        <label>
+                          Postal Code:
+                          <input type="text" id="card_address_postal_code" name="card[address][country_code]" />
+                        </label>
+                      </div>
+                    </div>
+                    <div class="small-2 large-2 columns">
+                      <div class="card-adress-state">
+                        <label>
+                          State:
+                          <input type="text" id="card_address_state" name="card[address][state]" />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-address-phone">
+                    <label>
+                      Phone:
+                      <input type="text" id="card_address_phone" name="card[address][phone]" />
+                    </label>
+                  </div>
+                </div>
+                <div class="panel">
+                  Delivery service (Currently hardcoded):<br />
+                  <select id="batch_serviceprovider" name="batch[serviceprovider]" readonly="true">
+                    <option value="dhl" selected>DHL</option>
+                  </select>
+                  <br />
+                  <h4>Please confirm the total amount is:</h4>
+                  <table>
+                    <col width="100" align="left">
+                    <col width="100" align="right">
+                    <tr>
+                      <td>Item total:</td>
+                      <td><input type="number" id="batch_itemtotal" name="batch[mailfee]" value="<%= @tmp_paytotal.round(2) %>" readonly="true" /></td>
+                    </tr>
+                    <tr>
+                      <td>Delivery Fee (Currently hardcoded):</td>
+                      <td><input type="number" id="batch_mailfee" name="batch[mailfee]" value="350.0" readonly="true" /></td>
+                    </tr>
+                    <tr>
+                      <td>Order Total:</td>
+                      <td><input type="number" id="batch_finalpayment" name="batch[finalpayment]" value="<%= @tmp_paytotal.round(2) + 350.0 %>" readonly="true" /></td>
+                    </tr>
+                  </table> 
+                  Order remarks: 
+                  <textarea type="text" id="batch_remark" name="batch[remark]" rows="6"></textarea>
+                </div>
+                <%= submit_tag("Confirm Checkout", class: "button" , id: "link_submit") %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% else %>
+  <div data-alert class="alert-box info radius">
+    You shopping cart is empty
+  </div>
+<% end %>
+

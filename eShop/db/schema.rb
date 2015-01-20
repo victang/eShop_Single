@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141206052046) do
+ActiveRecord::Schema.define(version: 20150103170340) do
 
   create_table "batches", force: true do |t|
     t.string   "code"
@@ -33,6 +33,8 @@ ActiveRecord::Schema.define(version: 20141206052046) do
     t.text     "user_remark"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "mailagent"
+    t.float    "mailfee",     limit: 24
   end
 
   create_table "carts", force: true do |t|
@@ -42,6 +44,14 @@ ActiveRecord::Schema.define(version: 20141206052046) do
     t.integer  "shopitem_amount"
     t.float    "pay_amount",      limit: 24
     t.boolean  "selected"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "countries", force: true do |t|
+    t.string   "areacode"
+    t.string   "countryid"
+    t.string   "countryname"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -91,6 +101,7 @@ ActiveRecord::Schema.define(version: 20141206052046) do
     t.boolean  "active"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "weight",     limit: 24
   end
 
   create_table "users", force: true do |t|
