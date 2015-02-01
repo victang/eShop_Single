@@ -38,5 +38,17 @@
       </div>
       <a class="close-reveal-modal">&#215;</a>
     </div>
+    <% when "paypal" then %>
+      <% case flash[:notice].to_s.split(';')[1] %>
+        <% when "success" then %>
+          <div data-alert class="alert-box success radius">
+            Checkout with payment is completed successfully (<%= flash[:notice].to_s.split(';')[2]%>)
+            <a href="#" class="close">&times;</a>
+          </div>
+        <% when "fail" then %>
+          <div data-alert class="alert-box alert radius">
+            Checkout with payment failed (Error Code: <%= flash[:notice].to_s.split(';')[2]%>)
+          </div>
+      <% end %>
   <% end %>
 <% end %>

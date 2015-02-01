@@ -63,7 +63,7 @@
           <tr>
             <td colspan="4" style="text-align:right"><b>Total: </b></td>
             <td style="text-align:right"><b><%= @tmp_paytotal.round(2) %></b></td>
-            <input type="hidden" id="cart_paytotal" name="cart[paytotal]" value="><%= @tmp_paytotal.round(2) %>"/>
+            <input type="hidden" id="cart_paytotal" name="cart[paytotal]" value="<%= @tmp_paytotal.round(2) %>"/>
           </tr>
         </table>
         <br />
@@ -160,7 +160,14 @@
                             <label>
                               Month:
                               <select id="card_expire_month" name="card[expire_month]">
-                              <input type="text" id="card_expire_month" name="card[expire_month]" />
+                                <% (1..12).each do |m| %>
+                                  <% if m == Date.today.strftime("%m").to_i %>
+                                    <option selected value="<%= m%>"><%= m%></option>
+                                  <% else %>
+                                    <option value="<%= m%>"><%= m%></option>
+                                  <% end %>
+                                <% end %>
+                              </select>
                             </label>
                           </div>
                         </div>
@@ -168,7 +175,15 @@
                           <div class="card-expire-year">
                             <label>
                               Year:
-                              <input type="text" id="card_expire_year" name="card[expire_year]" />
+                              <select id="card_expire_year" name="card[expire_year]">
+                                <% ((Date.today.strftime("%Y").to_i)..(Date.today.strftime("%Y").to_i + 10)).each do |y| %>
+                                  <% if y == Date.today.strftime("%m").to_i %>
+                                    <option selected value="<%= y%>"><%= y%></option>
+                                  <% else %>
+                                    <option value="<%= y%>"><%= y%></option>
+                                  <% end %>
+                                <% end %>
+                              </select>
                             </label>
                           </div>
                         </div>
@@ -211,7 +226,7 @@
                       <div class="card-address-city">
                         <label>
                           City:
-                          <input type="text" id="card_city" name="card[city]" />
+                          <input type="text" id="card__address_city" name="card[address][city]" />
                         </label>
                       </div>
                     </div>
@@ -219,7 +234,15 @@
                       <div class="card-address-country-code">
                         <label>
                           Country:
-                          <input type="text" id="card_address_country_code" name="card[address][country_code]" />
+                          <select id="card_address_country_code" name="card[address][country_code]">
+                            <% Country.all.each do |co| %>
+                              <% if co.countryid == "HK" %>
+                                <option value="<%= co.countryid %>" selected><%= co.countryname %></option>
+                              <% else %>
+                                <option value="<%= co.countryid %>"><%= co.countryname %></option>
+                              <% end %>
+                            <% end %>
+                          </select>
                         </label>
                       </div>
                     </div>
@@ -227,7 +250,7 @@
                       <div class="card-address-postal-code">
                         <label>
                           Postal Code:
-                          <input type="text" id="card_address_postal_code" name="card[address][country_code]" />
+                          <input type="text" id="card_address_postal_code" name="card[address][postal_code]" />
                         </label>
                       </div>
                     </div>
@@ -259,7 +282,7 @@
                     <col width="100" align="right">
                     <tr>
                       <td>Item total:</td>
-                      <td><input type="number" id="batch_itemtotal" name="batch[mailfee]" value="<%= @tmp_paytotal.round(2) %>" readonly="true" /></td>
+                      <td><input type="number" id="batch_itemtotal" name="batch[itemtotal]" value="<%= @tmp_paytotal.round(2) %>" readonly="true" /></td>
                     </tr>
                     <tr>
                       <td>Delivery Fee (Currently hardcoded):</td>

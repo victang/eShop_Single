@@ -81,9 +81,11 @@ class CartsController < ApplicationController
             Rails.logger.debug("debug: unit.c = " + c.to_s + "; unit.k = " + k.to_s + "; unitold.k = " + params['cart']['unitold'][c.to_s].to_s + ";")
             if k.to_i != params['cart']['unitold'][c.to_s].to_i
               Rails.logger.debug("Start Update.")
-              @tmp_rec = Cart.find(c.to_s)
-              @tmp_rec.shopitem_amount = k.to_i
-              @tmp_rec.save
+              @tmp_rec = Cart.find_by_id(c.to_s)
+              if !@tmp_rec.blank?
+                @tmp_rec.shopitem_amount = k.to_i
+                @tmp_rec.save
+              end
             end
           end
         end 
@@ -127,17 +129,28 @@ class CartsController < ApplicationController
       @tmp_thiscart = Cart.where("(batch_id = ?) AND (user_id = ?)", @new_batch.id, session[:user_id])
       
       @tmp_itemlist = Array.new
-      @tmp_thiscart.each_with_index do |element, content|
+      @tmp_thiscart.each_with_index do |content, element|
         @tmp_shopitem = Shopitem.find(content.shopitem_id)
         @tmp_itemlist.push({
-          :name => "item",
-          :sku => "item",
-          :price => "1",
+          :name => @tmp_shopitem.short_name,
+          :sku => @tmp_shopitem.code_name,
+          :price => sprintf("%.2f", @tmp_shopitem.price.to_f),
           :currency => "HKD",
-          :quantity => 1
+          :quantity => content.shopitem_amount
         })
       end
       
+      # finally add the delievery price on it
+      @tmp_itemlist.push({
+        :name => "Delivery Price",
+        :sku => "DELIEVRY_PRICE",
+        :price => sprintf("%.2f", params[:batch][:mailfee].to_f),
+        :currency => "HKD",
+        :quantity => 1
+      })
+      
+      Rails.logger.debug("ItemList = " + @tmp_itemlist.to_s)
+          
       @payment = Payment.new({
         :intent => "sale",
         :payer => {
@@ -151,23 +164,23 @@ class CartsController < ApplicationController
               :cvv2 => params[:card][:cvv2],
               :first_name => params[:card][:first_name],
               :last_name => params[:card][:last_name],
-              :bill_address => {
-                :line1 => params[:card][:bill_address][:line1],
-                :line2 => params[:card][:bill_address][:line2],
-                :city => params[:card][:bill_address][:city],
-                :state => params[:card][:bill_address][:state],
-                :postal_code => params[:card][:bill_address][:postal_code],
-                :country_code => params[:card][:bill_address][:country_code]
+              :billing_address => {
+                :line1 => params[:card][:address][:line1],
+                :line2 => params[:card][:address][:line2],
+                :city => params[:card][:address][:city],
+                :state => params[:card][:address][:state],
+                :postal_code => params[:card][:address][:postal_code],
+                :country_code => params[:card][:address][:country_code].to_s.upcase
               }
             }
           }]
         },
         :transactions => [{
           :item_list => {
-            :items => [@tmp_itemlist]
+            :items => @tmp_itemlist
           },
-          amount => {
-            :total => params[:batch][:finalpayment],
+          :amount => {
+            :total => sprintf("%.2f", params[:batch][:finalpayment].to_f),
             :currency => "HKD"
           },
           :description => "Payment Batch ID: " + @new_batch.id.to_s + "; Pay by PayPal."
@@ -175,8 +188,10 @@ class CartsController < ApplicationController
       })
       if @payment.create
         flash[:notice] = "paypal;success;" + @payment.id.to_s
+        redirect_to controller: "index", action: "index"
       else
         flash[:notice] = "paypal;fail;" + @payment.error.to_s
+        redirect_to controller: "carts", action: "checkout"
       end
     else
       flash[:notice] = "checkout;fail;cannotsave"
