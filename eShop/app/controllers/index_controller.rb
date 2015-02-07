@@ -25,15 +25,27 @@ class IndexController < ApplicationController
         @selected_tags = params[:index][:tag]
       end
     end
-    # Check the tags
-    if !@selected_tags.nil?
-      if !@selected_tags.empty?
-        @selected_tags.each do |t|
-          @shopitems.select("shopitems.*").joins(:shopitem_tag).where("(? BETWEEN shopitems.date_from AND shopitems.date_to) AND (shopitems.active = ?) AND ", Date.today, true)
+    
+    @temp_keyword = ""
+    @temp_keyword_s = ""
+    # Check the keywords
+    if !params[:index].nil?
+      if !params[:index][:keyword].nil?
+        if params[:index][:keyword] != ""
+          @temp_keyword = "%" + params[:index][:keyword].to_s + "%"
+          @temp_keyword_s = params[:index][:keyword].to_s
+          @shopitems = @shopitems.where("(short_name LIKE ?) OR (long_name LIKE ?) OR (descr LIKE ?)", @temp_keyword, @temp_keyword, @temp_keyword)
         end
       end
     end
     
+    # Check the tags
+    if !@selected_tags.nil?
+      if !@selected_tags.empty?
+        # This is the part we do the filtering by tags
+      end
+    end
+  
     respond_to do |format|
       format.html
       format.json
