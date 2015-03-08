@@ -97,6 +97,9 @@ class CartsController < ApplicationController
   def checkout
     @pending_cart = Cart.where("(batch_id = 0) AND (user_id = ?)", session[:user_id])
     @new_batch = Batch.new
+    
+    @latest_buyerdetail = Batch.where("user_id = ?", session[:user_id]).order("created_at DESC, updated_at DESC").first
+    
   end
   
   def save_checkout

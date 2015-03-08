@@ -2,7 +2,7 @@
 <!-- Default itemperpage is 36 item per page -->
 <% @tmp_itemperpage = getitemperpage %>
 <!-- Get the max page number possible -->
-<% @tmp_maxpagenum = getshopitemmaxpagenum %>
+
 <% if params[:page] == nil %>
   <% params[:page] = 1 %>
 <% end %>
@@ -27,21 +27,21 @@
 <div class="pagination-centered">
   <ul class="pagination">
     <% if params[:page].to_i <= 1 %>
-      <li class="arrow unavailable"><a href="">&laquo;</a></li>
+      <li class="arrow unavailable"><font color="#e9e9e9">&laquo;</font></li>
     <% else %>
-      <li class="arrow"><%= link_to "&laquo;".html_safe, :controller => :index, :action => :index, :page => params[:page].to_i - 1 %></li>
+      <li class="arrow"><%= link_to "&laquo;".html_safe, {:controller => :index, :action => :index, :page => params[:page].to_i - 1, :keyword => @selected_keyword, :tags => @selected_tags} %></li>
     <% end %>
-    <% (1..@tmp_maxpagenum).each do |j| %>
+    <% (1..@maxpagenum).each do |j| %>
       <% if j == params[:page].to_i %>
-        <li class="current"><%= link_to j, :controller => :index, :action => :index, :page => j %></li>
+        <li class="current"><%= link_to j, {:controller => :index, :action => :index, :page => j, :keyword => @selected_keyword, :tags => @selected_tags} %></li>
       <% else %>
-        <li><%= link_to j, :controller => :index, :action => :index, :page => j %></li>
+        <li><%= link_to j, {:controller => :index, :action => :index, :page => j, :keyword => @selected_keyword, :tags => @selected_tags} %></li>
       <% end %>
     <% end %>
-    <% if params[:page].to_i >= @tmp_maxpagenum %>
-      <li class="arrow unavailable"><a href="">&raquo;</a></li>
+    <% if params[:page].to_i >= @maxpagenum %>
+      <li class="arrow unavailable"><font color="#e9e9e9">&raquo;</font></li>
     <% else %>
-      <li class="arrow"><%= link_to "&raquo;".html_safe, :controller => :index, :action => :index, :page => params[:page].to_i + 1 %><li>
+      <li class="arrow"><%= link_to "&raquo;".html_safe, {:controller => :index, :action => :index, :page => params[:page].to_i + 1, :keyword => @selected_keyword, :tags => @selected_tags} %><li>
     <% end %>
   </ul>
 </div>

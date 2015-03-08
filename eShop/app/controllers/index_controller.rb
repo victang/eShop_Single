@@ -3,49 +3,74 @@ class IndexController < ApplicationController
   skip_before_filter :verify_authenticity_token  
   skip_before_action :verify_authenticity_token
     
+  def getshopitemswithfilter(in_keyword, in_tags)
+    # expect input:
+    #   in_keyword: string
+    #   in_tags: array[string]
+    # expect output:
+    #  out_pagenumber: integer
+    #  out_items: array[model:shopitem]
+    if (in_keyword.strip == "") && ((in_tags.empty? == true) || (in_tags == nil))
+      out_items = Shopitem.where("(active = ?)", true)
+    else  
+      if ((in_tags.empty? == true) || (in_tags == nil))
+        tmp_realkeyword = "%" + in_keyword.strip.gsub(" ", "%") + "%"
+        out_items = Shopitem.where("((UPPER(short_name) LIKE UPPER(?)) OR (UPPER(long_name) LIKE UPPER(?))) AND (active = ?)", tmp_realkeyword, tmp_realkeyword, true)
+      else 
+        tmp_itemswithtag = ShopitemTag.where(tag: in_tags).select("shopitem_id")
+        tmp_realkeyword = "%" + in_keyword.strip.gsub(" ", "%") + "%"
+        out_items = Shopitem.where("((UPPER(short_name) LIKE UPPER(?)) OR (UPPER(long_name) LIKE UPPER(?))) AND (id IN (?)) AND (active = ?)", tmp_realkeyword, tmp_realkeyword, tmp_itemswithtag, true)
+      end
+    end 
+    if (out_items.count % getitemperpage > 0)
+      out_pagenumber = (out_items.count / getitemperpage) + 1
+    else
+      out_pagenumber = out_items.count / getitemperpage
+    end
+    
+    return out_pagenumber, out_items
+  end
+    
   def index
     params.permit!
     # Fetch all suitable banners
     @banner = Promotion.where("(? BETWEEN date_from AND date_to) AND (active = ?)", Date.today, true)
-    # @banner = Promotion.where("active = 1")
-    # @banner = Promotion.all
-    @shopitems = Shopitem.where("(active = ?)", true)
-    #@shopitems = Shopitem.all
-    
     @all_tags = getalltags
     
-    if params[:page] != nil
-      if (params[:page].to_i > getshopitemmaxpagenum) || (params[:page].to_i < 1)
-        not_found
-      end 
-    end
-    
-    if !params[:index].nil?
-      if !params[:index][:tag].nil?
-        @selected_tags = params[:index][:tag]
+    @selected_tags = []
+    if !params[:tags].nil?
+      params[:tags].each do |v|
+        @selected_tags.push(v.to_s)
       end
-    end
-    
-    @temp_keyword = ""
-    @temp_keyword_s = ""
-    # Check the keywords
-    if !params[:index].nil?
-      if !params[:index][:keyword].nil?
-        if params[:index][:keyword] != ""
-          @temp_keyword = "%" + params[:index][:keyword].to_s + "%"
-          @temp_keyword_s = params[:index][:keyword].to_s
-          @shopitems = @shopitems.where("(short_name LIKE ?) OR (long_name LIKE ?) OR (descr LIKE ?)", @temp_keyword, @temp_keyword, @temp_keyword)
+    else
+      if !params[:index].nil?
+        if !params[:index][:tag].nil?
+          params[:index][:tag].each do |e, v|
+            @selected_tags.push(v.to_s)
+          end
         end
       end
     end
     
-    # Check the tags
-    if !@selected_tags.nil?
-      if !@selected_tags.empty?
-        # This is the part we do the filtering by tags
+    @selected_keyword = ""
+    if !params[:keyword].nil?
+      @selected_keyword = params[:keyword]
+    else
+      if !params[:index].nil?
+        if !params[:index][:keyword].nil?
+          @selected_keyword = params[:index][:keyword]
+        end
       end
     end
-  
+    
+    @maxpagenum, @shopitems = getshopitemswithfilter(@selected_keyword, @selected_tags)
+    
+    if params[:page] != nil
+      if (params[:page].to_i > @maxpagenum) || (params[:page].to_i < 1)
+        not_found
+      end 
+    end
+    
     respond_to do |format|
       format.html
       format.json

@@ -75,14 +75,14 @@
                 <div class="reicipent-name-field">
                   <label>
                     Reicipent Full Name:<small>Required</small>
-                    <input type="text" required id="batch_fullname" name="batch[fullname]" />
+                    <input type="text" required id="batch_fullname" name="batch[fullname]" value="<%= @latest_buyerdetail.fullname %>"/>
                   </label>
                   <small class="error">Reicipent name is required.</small>
                 </div>
                 <div class="email-field">
                   <label>
                     Email:<small>Required</small>
-                    <input type="text" required id="batch_email" name="batch[email]" pattern="email" />
+                    <input type="text" required id="batch_email" name="batch[email]" pattern="email" value="<%= @latest_buyerdetail.email %>"/>
                   </label>
                   <small class="error">E-mail is required.</small>
                 </div>
@@ -90,28 +90,36 @@
                 <div class="address-feld">
                   <label>
                     Address:<small>Required</small>
-                    <input type="text" required id="batch_address1" name="batch[address1]" />
+                    <input type="text" required id="batch_address1" name="batch[address1]" value="<%= @latest_buyerdetail.address1 %>"/>
                   </label>
                   <small class="error">Address is required for delivery.</small>
                 </div>
-                <input type="text" id="batch_address2" name="batch[address2]" />
+                <input type="text" id="batch_address2" name="batch[address2]" value="<%= @latest_buyerdetail.address2 %>"/>
                 
                 City:<br />
-                <input type="text" id="batch_city" name="batch[city]" />
+                <input type="text" id="batch_city" name="batch[city]" value="<%= @latest_buyerdetail.city %>"/>
                 Country:
-                <select id="batch_country" name="batch[country]">
+                <select id="batch_country" name="batch[country]" %>">
                   <% Country.all.each do |co| %>
-                    <% if co.countryid == "HK" %>
-                      <option value="<%= co.countryid %>" selected><%= co.countryname %></option>
+                    <% if @latest_buyerdetail.country != "" %>
+                      <% if co.countryid == @latest_buyerdetail.country %>
+                        <option value="<%= co.countryid %>" selected><%= co.countryname %></option>
+                      <% else %>
+                        <option value="<%= co.countryid %>"><%= co.countryname %></option>
+                      <% end %>
                     <% else %>
-                      <option value="<%= co.countryid %>"><%= co.countryname %></option>
+                      <% if co.countryid == "HK" %>
+                        <option value="<%= co.countryid %>" selected><%= co.countryname %></option>
+                      <% else %>
+                        <option value="<%= co.countryid %>"><%= co.countryname %></option>
+                      <% end %>
                     <% end %>
                   <% end %>
                 </select>
                 <div class="phone-field">
                   <label>
                     Phone number for the delivery:<small>Required</small>
-                    <input type="text" required id="batch_phone" name="batch[phone]" />
+                    <input type="text" required id="batch_phone" name="batch[phone]" value="<%= @latest_buyerdetail.phone %>"/>
                   </label>
                   <small class="error">Phone number is required for delivery</small>
                 </div>
@@ -209,6 +217,11 @@
                           </div>
                         </div>
                     </div>
+                  </div>
+                  <div class="button">
+                    <a herf="javascript:void(0);" onclick="f.card_address_line1.value=f.batch_address1.value;">
+                      Copy from delivery address
+                    </a>
                   </div>
                   <div class="card-address-line1">
                     <label>
